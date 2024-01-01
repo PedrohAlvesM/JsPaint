@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/imagens.css">
+
+    <title>Desehando com JS</title>
+</head>
+
+<body>
+
+    <section class="modal" id="configuracao">
+        <div>
+            <label>Largura</label>
+            <input type="number" id="largura-tela">
+            <span>px</span>
+        </div>
+        <div>
+            <label>Altura</label>
+            <input type="number" id="altura-tela">
+            <span>px</span>
+        </div>
+
+        <select id="resolucao-escolhida">
+            <option value="invalido">Resoluções padrão</option>
+            <option value="sdr">SD retrato (720X480)</option>
+            <option value="sdp">SD paisagem (480X720)</option>
+            <option value="hdr">HD retrato (1280X720)</option>
+            <option value="hdp">HD paisagem (720X1280)</option>
+            <option value="fhdr">Full HD retrato (1920X1080)</option>
+            <option value="fhdp">Full HD paisagem (1080X1920)</option>
+        </select>
+
+        <p id="mensagem"></p>
+        <div id="resolucao-alta-demais">
+            <p>Deseja continuar? </p>
+            <button id="criar-resolucao-alta">Sim</button>
+        </div>
+        <button id="confimar-tamanho-tela">Confirmar</button>
+    </section>
+
+    <section id="tela-ajuda">
+        <div class="imagem pincel"></div>
+        <p>O pincel é usado para fazer traços na tela de desenho. É possível personalizar a sua cor e tamanho. Dica:
+            pressionar a tecla "p" vai seleciona-lo automáticamente!</p>
+
+        <div class="imagem borracha"></div>
+        <p>A borracha é usada para apagar os traços feitos na tela. É possível mudar o seu tamanho. Dica: pressionar a
+            tecla "b" vai seleciona-la automáticamente!</p>
+
+        <div class="imagem forma-geometrica"></div>
+        <p>A ferramenta de formas geométricas é usada para criar simples formas de maneira automática. É possível criar
+            retângulos, círculos e linhas. É possível personalizar a sua cor de preenchimento e borda. Dica: pressionar
+            a tecla "f" vai seleciona-la automáticamente!</p>
+
+        <div class="imagem mover"></div>
+        <p>A ferramenta mover é usada para selecionar uma área na tela de desenho e a mover para outra área. É possível
+            personalizar o tamanho da área que será movida e usando os botões é possível selecionar a área, mover e
+            cancelar a área previamente selecionada. Dica: pressionarr a tecla "m" vai seleciona-la automáticamente!</p>
+
+        <div class="imagem conta-gotas"></div>
+        <p>A ferramenta conta gotas consegue selecionar uma cor na tela de desenhos e a colocar como cor do pincel.
+            Dica: pressionar a tecla "i" vai seleciona-la automáticamente!</p>
+
+        <div class="imagem cria-texto"></div>
+        <p>A ferramenta de textos permite colocar textos dentro da área de desenho. É possível personalizar a fonte, cor
+            da fonte e seu tamanho. Dica: se pressionar a tecla "t" vai seleciona-la automáticamente!</p>
+
+        <p>Última dica: pressionar as teclas "control" e "z" juntas vai desfazer o último traço feito na tela de
+            desenho!</p>
+
+        <button class="fechar-modal">
+            Fechar
+        </button>
+    </section>
+
+    <section class="modal" id="salvar" style="display: none;">
+
+    </section>
+
+    <main>
+        <section class="ferramentas">
+            <img src="../img/brush-svgrepo-com.svg" class="imagem" id="pincel">
+            <img src="../img/eraser-svgrepo-com.svg" class="imagem" id="borracha">
+            <img src="../img/geogebra-geometry-svgrepo-com.svg" class="imagem" id="forma-geometrica">
+            <img src="../img/dropper-svgrepo-com.svg" class="imagem" id="seleciona-cor">
+            <img src="../img/letter-english-a-svgrepo-com.svg" class="imagem" id="cria-texto">
+            <img src="../img/rectangle-4-svgrepo-com.svg" class="imagem" id="mover">            
+        </section>
+        
+        <!-- <canvas class="camada"></canvas> -->
+
+        <section>
+            <div class="ferramentas-info">
+                <div class="ferramenta-pincel">
+                    <div>
+                        <label>Tamanho do pincel</label>
+                        <input type="range" min="1" max="100" class="tamanho-pincel">
+                        <input type="number" class="tamanho-pincel">
+                    </div>
+                    <div class="ferramenta-pincel">
+                        <label>Cor do pincel</label>
+                        <input type="color" id="cor-pincel">
+                    </div>
+                </div>
+
+                <div class="ferramenta-borracha" style="display: none;">
+                    <div>
+                        <label>Tamanho da borracha</label>
+                        <input type="range" min="1" max="50" class="tamanho-borracha">
+                        <input type="number" class="tamanho-borracha">
+                    </div>
+                </div>
+
+                <div class="ferramenta-forma-geometrica" style="display: none;">
+                    <div>
+                        <img src="../img/square-svgrepo-com.svg" class="imagem quadrado">
+                        <img src="../img/circle-svgrepo-com.svg" class="imagem circulo">
+                        <img src="../img/line-svgrepo-com.svg" class="imagem reta">
+                    </div>
+
+                    <div>
+                        <label>Cor de preenchimento</label>
+                        <input type="color" id="cor-preenchimento-forma-geometrica">
+                    </div>
+
+                    <div>
+                        <label>Preenchimento</label>
+                        <input type="checkbox" id="preenchimento-forma-geometrica">
+                    </div>
+
+                    <div>
+                        <label>Tamanho da linha</label>
+                        <input type="number" id="tamanho-linha-forma-geometrica" value="1">
+                    </div>
+
+                    <div>
+                        <label>Cor na linha</label>
+                        <input type="checkbox" id="linha-forma-geometrica" checked>
+                    </div>
+                    <div>
+                        <label>Cor da linha</label>
+                        <input type="color" id="cor-linha-forma-geometrica" value="1">
+                    </div>
+                </div>
+
+                <div class="ferramenta-mover" style="display: none;">
+                    <div id="area-mover" draggable="true"></div>
+                    <button id="area-selecionada"> Selecionar área </button>
+                    <button id="cancelar-mover">Cancelar Seleção</button>
+                    <button id="confirmar-mover"> Confirmar movimento </button>
+                </div>
+
+                <div class="ferramenta-texto" style="display: none;">
+                    <div>
+                        <label>Texto</label>
+                        <textarea id="texto-inserido" cols="20" rows="2"></textarea>
+                    </div>
+
+                    <div>
+                        <label>Tamanho da fonte</label>
+                        <input type="range" min="1" max="50" class="tamanho-fonte">
+                        <input type="number" class="tamanho-fonte">
+                    </div>
+                    <div>
+                        <label>Cor do texto</label>
+                        <input type="color" name="" id="cor-texto">
+                    </div>
+
+                    <div>
+                        <select id="fontes">
+                            <option value="arial" style="font-family: Arial">Arial</option>
+                            <option value="times new roman" style="font-family: Times New Roman">Times New Roman
+                            </option>
+                            <option value="courier new" style="font-family: Courier New">Courier New</option>
+                            <option value="verdana" style="font-family: Verdana">Verdana</option>
+                            <option value="georgia" style="font-family: Georgia">Georgia</option>
+                            <option value="palatino" style="font-family: Palatino">Palatino</option>
+                            <option value="garamond" style="font-family: Garamond">Garamond</option>
+                            <option value="bookman" style="font-family: Bookman">Bookman</option>
+                            <option value="trebuchet ms" style="font-family: Trebuchet MS">Trebuchet MS</option>
+                            <option value="arial black" style="font-family: Arial Black">Arial Black</option>
+                            <option value="impact" style="font-family: Impact">Impact</option>
+                            <option value="comic sans ms" style="font-family: Comic Sans MS">Comic Sans MS</option>
+                            <option value="tahoma" style="font-family: Tahoma">Tahoma</option>
+                            <option value="geneva" style="font-family: Geneva">Geneva</option>
+                            <option value="helvetica" style="font-family: Helvetica">Helvetica</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="camadas-container">
+                <!-- <div class="camada-info selecionado">
+                    <p>Camada 1</p>
+                    <div class="excluir-camada imagem"></div>
+                    <div class="imagem visivel"></div>
+                </div> -->
+
+            </div>
+            <p id="salvar-desenho">Salvar desenho</p>
+            <p id="mostrar-ajuda">Ajuda e dicas</p>
+        </section>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
