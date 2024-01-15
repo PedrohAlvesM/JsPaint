@@ -31,21 +31,26 @@ main > section {
     background-color: var(--cor-fundo-principal);
 }
 
-p, label, button, select {
+p, label, button, select, a {
     padding: 10px;
     background-color: var(--cor-borda);
     border-radius: 10px;
     color: #f1f1f1;
 }
+
 input[type="number"] {
     width: 50px;
     border-radius: 10x;
 }
 
-button {
+button, a {
     width: 100%;
 }
 
+a {
+    text-align: center;
+    text-decoration: none;
+}
 
 section, .ferramentas{
     display: flex;
@@ -162,7 +167,7 @@ section, .ferramentas{
     display: none;
 }
 
-#mostrar-ajuda, #salvar-desenho {
+#mostrar-ajuda, #abrir-salvar {
     cursor: pointer;
 }
 
@@ -215,4 +220,8 @@ section, .ferramentas{
 }
 .excluir-camada {
     background-image: url("../img/file-xmark-svgrepo-com.svg");
+}
+
+#desenho-completo {
+    border: 1px solid var(--cor-borda);
 }

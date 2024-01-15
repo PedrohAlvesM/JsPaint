@@ -148,14 +148,16 @@ export class App {
         //cria o selecionador da camada
         const containerNovaCamada = document.getElementById("camadas-container");
         let containerCamadaInfo = document.createElement("div");
-        let visivelBtn = document.createElement("div");
-        let criarCamadaBtn = document.createElement("div");
-        let excluirBtn = document.createElement("div");
+        let visivelBtn = document.createElement("img");
+        let criarCamadaBtn = document.createElement("img");
+        let excluirBtn = document.createElement("img");
         let novoTexto = document.createElement("p");
 
         containerCamadaInfo.classList.add("camada-info", "selecionado");
-        criarCamadaBtn.classList.add("criar-camada", "imagem");
-        excluirBtn.classList.add("excluir-camada", "imagem");
+        criarCamadaBtn.classList.add("imagem");
+        criarCamadaBtn.src = "../img/file-plus-alt-1-svgrepo-com.svg";
+        excluirBtn.classList.add("imagem");
+        excluirBtn.src = "../img/file-xmark-svgrepo-com.svg";
         novoTexto.classList.add("nome-camada");
 
         //adiciona lógica para trocar de camada
@@ -176,17 +178,15 @@ export class App {
 
 
         //lógica para as funções das camadas
-        visivelBtn.classList.add("imagem", "visivel");
+        visivelBtn.classList.add("imagem");
         visivelBtn.addEventListener("click", () => {
             if (this.camadaAtual.style.opacity > 0) {
                 this.camadaAtual.style.opacity = 0;
-                visivelBtn.classList.remove("visivel");
-                visivelBtn.classList.add("invisivel");
+                visivelBtn.src = "../img/eye-off-svgrepo-com.svg";
             }
             else {
                 this.camadaAtual.style.opacity = 1;
-                visivelBtn.classList.add("visivel");
-                visivelBtn.classList.remove("invisivel");
+                visivelBtn.src = "../img/eye-svgrepo-com.svg";
             }
         });
 
@@ -254,11 +254,6 @@ export class App {
     }
 
     SalvarDesenho() {
-        //debugger
-        // let desenhoCamadas = [];
-        // for (let tela of this.camadas) {
-        //     desenhoCamadas.push(tela.toDataURL("image/png", 1));
-        // }
         const tmp = document.createElement("canvas");
         tmp.id = "criar-imagem";
 
@@ -276,12 +271,19 @@ export class App {
         const img = tmp.toDataURL("image/png", 1);
 
         const desenhoCompleto = document.createElement("img");
+        desenhoCompleto.id = "desenho-completo";
+        desenhoCompleto.width = tmp.width / 2;
+        desenhoCompleto.src = img; 
+
         const downloadImg = document.createElement("a");
+        downloadImg.innerText = "Salvar desenho";
+        downloadImg.setAttribute("download", "desenho.png");
+        downloadImg.href = img;
 
-        desenhoCompleto.src = img; //isso tá total errado bro
-        downloadImg.setAttribute("download", "true");
+        const containerSalvar = document.getElementById("salvar");
+        containerSalvar.querySelectorAll("img, a").forEach(elemento => elemento.remove());
 
-        downloadImg.appendChild(desenhoCompleto);
-        document.body.appendChild(downloadImg);
+        containerSalvar.getElementsByTagName("h1")[0].insertAdjacentElement("afterend", desenhoCompleto);
+        containerSalvar.getElementsByClassName("fechar-modal")[0].insertAdjacentElement("beforebegin", downloadImg);
     }
 }

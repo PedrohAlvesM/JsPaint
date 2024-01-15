@@ -13,7 +13,7 @@
 
 <body>
 
-    <section class="modal" id="configuracao">
+    <section class="modal" id="configuracao" style="display: flex;">
         <div>
             <label>Largura</label>
             <input type="number" id="largura-tela">
@@ -77,12 +77,24 @@
             Fechar
         </button>
     </section>
-
+    
     <section class="modal" id="salvar" style="display: none;">
-
+        <h1>Salvando desenho</h1>
+        <!-- Texto assíncrono de gerando arquivo de imagem do desenho... -->
+        <!-- imagem em png por padrão -->
+        <div>
+            <label for="png"> PNG </label>
+            <input type="radio" id="png" name="formatoImagem" value="png" checked>
+            
+            <label for="jpg">JPG</label>
+            <input type="radio" id="jpg" name="formatoImagem" value="jpg">
+        </div>
+        <button class="fechar-modal">
+            Fechar
+        </button>
     </section>
 
-    <main>
+    <main style="display: none;">
         <section class="ferramentas">
             <img src="../img/brush-svgrepo-com.svg" class="imagem" id="pincel">
             <img src="../img/eraser-svgrepo-com.svg" class="imagem" id="borracha">
@@ -202,7 +214,7 @@
                 </div> -->
 
             </div>
-            <p id="salvar-desenho">Salvar desenho</p>
+            <p id="abrir-salvar">Salvar desenho</p>
             <p id="mostrar-ajuda">Ajuda e dicas</p>
         </section>
     </main>

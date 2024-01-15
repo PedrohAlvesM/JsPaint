@@ -1,10 +1,10 @@
 import { App } from "./app-class.js";
 
+const app = new App();
 let pilhaMenuAberto = [];
 const btnFechar = document.getElementsByClassName("fechar-modal");
 
 document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
-    const app = new App();
     let resolucaoDefinida = false;
 
     const resolucao = document.getElementById("resolucao-escolhida").value;
@@ -71,8 +71,9 @@ document.getElementById("mostrar-ajuda").addEventListener("click", ()=>{
     AbrirModal(modalAjuda);
 });
 
-document.getElementById("salvar-desenho").addEventListener("click", ()=>{
+document.getElementById("abrir-salvar").addEventListener("click", ()=>{
     const modalSalvar = document.getElementById("salvar");
+    app.SalvarDesenho();
     
     AbrirModal(modalSalvar);
 });
