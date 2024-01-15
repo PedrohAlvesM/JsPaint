@@ -188,6 +188,16 @@ section, .ferramentas{
     }
 }
 
+#borracha, #forma-geometrica {
+    width: 35px;
+}
+.quadrado, .circulo, .reta {
+    width: 80px;
+}
+
+.imagem {
+    width: 30px;
+}
 .selecionado {
     background-color: #868B8E;
 }
