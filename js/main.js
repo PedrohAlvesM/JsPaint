@@ -59,6 +59,13 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
     if (resolucaoDefinida) {
         document.getElementById("configuracao").style.display = "none";
         document.getElementsByTagName("main")[0].style.display = "grid";
+        document.documentElement.style.background = "#fff";
+        document.body.style.background = "#fff";
+        
+        const sliders = document.querySelectorAll("input[type='range'], input[type='number']");
+        for (let s of sliders) {
+            s.value = 5;
+        }
     
         document.getElementById("pincel").click();
     }

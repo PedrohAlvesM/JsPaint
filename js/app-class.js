@@ -179,6 +179,7 @@ export class App {
 
         //lógica para as funções das camadas
         visivelBtn.classList.add("imagem");
+        visivelBtn.src = "../img/eye-svgrepo-com.svg";
         visivelBtn.addEventListener("click", () => {
             if (this.camadaAtual.style.opacity > 0) {
                 this.camadaAtual.style.opacity = 0;
