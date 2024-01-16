@@ -1,4 +1,10 @@
-import { ferramentas } from "./ferramentas.js";
+// import { ferramentas } from "./this.js";
+import { Pincel } from "./pincel-class.js";
+import { Borracha } from "./borracha-class.js";
+import { CriarTexto } from "./criarTexto-class.js";
+import { FormaGeometrica } from "./formaGeometrica-class.js";
+import { MoverArea } from "./moverArea-class.js";
+import { SelecionaCor } from "./selecionaCor-class.js";
 
 export class App {
     constructor() {
@@ -6,22 +12,48 @@ export class App {
         this.camadaAtual = null;
         this.contextoAtual = null;
         this.pilhaAcoes = [];
+        this.iconesFerramentas = [];
+
+        this.ferramentaSelecionada = null;
+        this.pincel = new Pincel();
+        this.borracha = new Borracha();
+        this.texto = new CriarTexto();
+        this.formaGeometrica = new FormaGeometrica();
+        this.mover = new MoverArea();
+        this.selecionaCor = new SelecionaCor();
 
         this.MovimentoMouse = this.MovimentoMouse.bind(this);
+
+        this.iconesFerramentas.push(this.pincel.icone);
+        this.iconesFerramentas.push(this.borracha.icone);
+        this.iconesFerramentas.push(this.texto.icone);
+        this.iconesFerramentas.push(this.formaGeometrica.icone);
+        this.iconesFerramentas.push(this.mover.icone);
+        this.iconesFerramentas.push(this.selecionaCor.icone);
+
+        for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor]) {
+            ferramenta.icone.addEventListener("click", () => {
+                document.querySelectorAll(".ferramentas > img").forEach(icone => icone.classList.remove("nao-selecionado"));
+                ferramenta.icone.classList.add("nao-selecionado");
+                if (ferramenta.icone.id !== "seleciona-cor") {
+                    const elementosApagar = document.querySelectorAll(".ferramentas-info > div");
+    
+                    for (let elemento of elementosApagar) {
+                        elemento.style.display = "none";
+                    }
+                    document.getElementsByClassName(`ferramenta-${ferramenta.icone.id}`)[0].style.display = "flex";            
+                }
+                this.ferramentaSelecionada = ferramenta;
+            });
+        }
     }
 
     Init(larguraTela, alturaTela) {
         this.CriaCamada(larguraTela, alturaTela);
 
-        for (let ferramenta in ferramentas) {
-            if (ferramenta !== "icones" && ferramenta !== "ferramentaSelecionada" && ferramenta !== "GerenciaFerramenta" && ferramenta !== "DefineCorPrincipal") {
-                ferramentas[ferramenta].Init();
-            }
-        }
+        this.pincel.tamanhoPincel = 2;
 
-        ferramentas.pincel.tamanhoPincel = 2;
-        
-        document.getElementById("confirmar-mover").addEventListener("click", () => { ferramentas.mover.MoverArea(this.contextoAtual); });
+        document.getElementById("confirmar-mover").addEventListener("click", () => { this.mover.MoverArea(this.contextoAtual); });
     }
 
     DefineTamanhoTela(largura, altura) {
@@ -40,33 +72,33 @@ export class App {
             }
 
 
-            if (ferramentas.ferramentaSelecionada === ferramentas.pincel || ferramentas.ferramentaSelecionada === ferramentas.borracha) {
+            if (this.ferramentaSelecionada === this.pincel || this.ferramentaSelecionada === this.borracha) {
                 this.camadaAtual.addEventListener("mousemove", this.MovimentoMouse);
             }
-            else if (ferramentas.ferramentaSelecionada === ferramentas.SelecionaCor) {
-                ferramentas.SelecionaCor.CorSelecionada(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+            else if (this.ferramentaSelecionada === this.selecionaCor) {
+                this.selecionaCor.CorSelecionada(mouse.offsetX, mouse.offsetY, this.contextoAtual);
             }
-            else if (ferramentas.ferramentaSelecionada === ferramentas.texto) {
-                ferramentas.texto.CriaTexto(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+            else if (this.ferramentaSelecionada === this.texto) {
+                this.texto.CriaTexto(mouse.offsetX, mouse.offsetY, this.contextoAtual);
             }
-            else if (ferramentas.ferramentaSelecionada === ferramentas.formaGeometrica) {
-                ferramentas.formaGeometrica.ctx = this.contextoAtual;
-                ferramentas.formaGeometrica.DesenhaForma();
+            else if (this.ferramentaSelecionada === this.formaGeometrica) {
+                this.formaGeometrica.ctx = this.contextoAtual;
+                this.formaGeometrica.DesenhaForma();
             }
-            else if (ferramentas.ferramentaSelecionada === ferramentas.BaldeTinta) {
-                ferramentas.BaldeTinta.Pintar(this.contextoAtual, this.camadaAtual.width, this.camadaAtual.height, mouse.offsetX, mouse.offsetY);
+            else if (this.ferramentaSelecionada === this.BaldeTinta) {
+                this.BaldeTinta.Pintar(this.contextoAtual, this.camadaAtual.width, this.camadaAtual.height, mouse.offsetX, mouse.offsetY);
             }
 
         });
 
         this.camadaAtual.addEventListener("mouseup", () => {
-            if (ferramentas.borracha.apagando) {
+            if (this.borracha.apagando) {
                 this.camadaAtual.removeEventListener("mousemove", this.MovimentoMouse);
-                ferramentas.borracha.apagando = false;
+                this.borracha.apagando = false;
             }
-            else if (ferramentas.pincel.desenhando) {
+            else if (this.pincel.desenhando) {
                 this.camadaAtual.removeEventListener("mousemove", this.MovimentoMouse);
-                ferramentas.pincel.desenhando = false;
+                this.pincel.desenhando = false;
             }
             this.contextoAtual.beginPath();
         });
@@ -74,27 +106,27 @@ export class App {
         document.addEventListener("keydown", (tecla) => {
             const atalhoSimples = {
                 "p": () => {
-                    ferramentas.ferramentaSelecionada = ferramentas.pincel;
+                    this.ferramentaSelecionada = this.pincel;
                     document.getElementById("pincel").click();
                 },
                 "b": () => {
-                    ferramentas.ferramentaSelecionada = ferramentas.borracha;
+                    this.ferramentaSelecionada = this.borracha;
                     document.getElementById("borracha").click();
                 },
-                "f": ()=>{
-                    ferramentas.ferramentaSelecionada = ferramentas.formaGeometrica;
+                "f": () => {
+                    this.ferramentaSelecionada = this.formaGeometrica;
                     document.getElementById("forma-geometrica").click();
                 },
-                "m": ()=>{
-                    ferramentas.ferramentaSelecionada = ferramentas.mover;
+                "m": () => {
+                    this.ferramentaSelecionada = this.mover;
                     document.getElementById("mover").click();
                 },
                 "i": () => {
-                    ferramentas.ferramentaSelecionada = ferramentas.SelecionaCor;
+                    this.ferramentaSelecionada = this.selecionaCor;
                     document.getElementById("seleciona-cor").click();
                 },
                 "t": () => {
-                    ferramentas.ferramentaSelecionada = ferramentas.texto;
+                    this.ferramentaSelecionada = this.texto;
                     document.getElementById("cria-texto").click();
                 },
             }
@@ -104,7 +136,7 @@ export class App {
                     this.DesfazerAcao();
                 }
             }
-            else if (ferramentas.ferramentaSelecionada !== ferramentas.texto) {
+            else if (this.ferramentaSelecionada !== this.texto) {
                 if (atalhoSimples[tecla.key.toLocaleLowerCase()]) {
                     atalhoSimples[tecla.key.toLocaleLowerCase()]();
                 }
@@ -115,19 +147,19 @@ export class App {
     }
 
     MovimentoMouse(mouse) {
-        if (ferramentas.ferramentaSelecionada === null) {
+        if (this.ferramentaSelecionada === null) {
             this.camadaAtual.removeEventListener("mousemove", this.MovimentoMouse);
         }
 
-        if (ferramentas.ferramentaSelecionada === ferramentas.pincel) {
-            ferramentas.pincel.desenhando = true;
-            ferramentas.borracha.apagando = false;
-            ferramentas.pincel.Desenhar(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+        if (this.ferramentaSelecionada === this.pincel) {
+            this.pincel.desenhando = true;
+            this.borracha.apagando = false;
+            this.pincel.Desenhar(mouse.offsetX, mouse.offsetY, this.contextoAtual);
         }
-        else if (ferramentas.ferramentaSelecionada === ferramentas.borracha) {
-            ferramentas.pincel.desenhando = false;
-            ferramentas.borracha.apagando = true;
-            ferramentas.borracha.Apagar(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+        else if (this.ferramentaSelecionada === this.borracha) {
+            this.pincel.desenhando = false;
+            this.borracha.apagando = true;
+            this.borracha.Apagar(mouse.offsetX, mouse.offsetY, this.contextoAtual);
         }
     }
 
@@ -161,7 +193,7 @@ export class App {
         novoTexto.classList.add("nome-camada");
 
         //adiciona lógica para trocar de camada
-        containerCamadaInfo.addEventListener("click", ()=>{
+        containerCamadaInfo.addEventListener("click", () => {
             this.TrocarCamada(novaCamada);
         });
 
@@ -194,7 +226,7 @@ export class App {
         excluirBtn.addEventListener("click", (e) => {
             this.DeletarCamada(novaCamada, containerCamadaInfo, e);
         });
-        criarCamadaBtn.addEventListener("click", ()=>{this.CriaCamada(larguraTela, alturaTela)});
+        criarCamadaBtn.addEventListener("click", () => { this.CriaCamada(larguraTela, alturaTela) });
 
         //adiciona todos os novos elementos nos seus containers
         containerCamadaInfo.appendChild(novoTexto);
@@ -215,7 +247,7 @@ export class App {
         for (let tmp of camadas) {
             tmp.classList.add("nao-selecionado");
         }
-        const indexContainer = this.camadas.findIndex((c)=>c === camada);
+        const indexContainer = this.camadas.findIndex((c) => c === camada);
         document.querySelectorAll("div.camada-info")[indexContainer].classList.remove("nao-selecionado");
         document.querySelectorAll("div.camada-info")[indexContainer].classList.add("selecionado");
     }
@@ -224,25 +256,25 @@ export class App {
         if (this.camadas.length === 1) {
             return
         }
-        const indexDeletar = this.camadas.findIndex((c)=>c === camada);
+        const indexDeletar = this.camadas.findIndex((c) => c === camada);
 
         this.camadas.splice(indexDeletar, 1);
         camada.remove();
         camadaInfo.remove();
-        
+
         const nomeCamada = document.getElementsByClassName("nome-camada");
         let i = 0;
         let pularCamadaComNome = 0;
-        while (i+pularCamadaComNome < nomeCamada.length) {
-            if (nomeCamada[i+pularCamadaComNome].innerText.includes("Camada")) {
-                nomeCamada[i+pularCamadaComNome].innerText = `Camada ${i+1}`;
+        while (i + pularCamadaComNome < nomeCamada.length) {
+            if (nomeCamada[i + pularCamadaComNome].innerText.includes("Camada")) {
+                nomeCamada[i + pularCamadaComNome].innerText = `Camada ${i + 1}`;
                 i++;
             }
             else {
                 pularCamadaComNome++;
             }
         }
-        this.TrocarCamada(this.camadas[this.camadas.length-1]);
+        this.TrocarCamada(this.camadas[this.camadas.length - 1]);
 
         clique.stopPropagation(); //impedir que o evento de clique do container das informações da camada seja disparado
     }
@@ -274,7 +306,7 @@ export class App {
         const desenhoCompleto = document.createElement("img");
         desenhoCompleto.id = "desenho-completo";
         desenhoCompleto.width = tmp.width / 2;
-        desenhoCompleto.src = img; 
+        desenhoCompleto.src = img;
 
         const downloadImg = document.createElement("a");
         downloadImg.innerText = "Salvar desenho";

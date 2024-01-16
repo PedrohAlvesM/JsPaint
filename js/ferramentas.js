@@ -269,10 +269,8 @@ export const ferramentas = {
             const rHex = r.toString(16).padStart(2, "0");
             const gHex = g.toString(16).padStart(2, "0");
             const bHex = b.toString(16).padStart(2, "0");
-            // const aHex = a.toString(16).padStart(2, "0");
 
             return `#${rHex}${gHex}${bHex}`;
-            // return `#${rHex}${gHex}${bHex}${aHex}`;
         },
     },
 
