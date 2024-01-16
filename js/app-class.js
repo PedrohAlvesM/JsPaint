@@ -12,7 +12,6 @@ export class App {
         this.camadaAtual = null;
         this.contextoAtual = null;
         this.pilhaAcoes = [];
-        this.iconesFerramentas = [];
 
         this.ferramentaSelecionada = null;
         this.pincel = new Pincel();
@@ -23,13 +22,6 @@ export class App {
         this.selecionaCor = new SelecionaCor();
 
         this.MovimentoMouse = this.MovimentoMouse.bind(this);
-
-        this.iconesFerramentas.push(this.pincel.icone);
-        this.iconesFerramentas.push(this.borracha.icone);
-        this.iconesFerramentas.push(this.texto.icone);
-        this.iconesFerramentas.push(this.formaGeometrica.icone);
-        this.iconesFerramentas.push(this.mover.icone);
-        this.iconesFerramentas.push(this.selecionaCor.icone);
 
         for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor]) {
             ferramenta.icone.addEventListener("click", () => {
