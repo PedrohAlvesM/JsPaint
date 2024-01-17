@@ -89,6 +89,9 @@ section, .ferramentas{
     grid-column: 2/3;
     grid-row: 1/1;
 }
+.camada:hover {
+    cursor: crosshair;
+}
 
 .camada-info {
     display: flex;

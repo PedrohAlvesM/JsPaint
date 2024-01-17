@@ -116,3 +116,12 @@ function FecharModal() {
 for (let btn of btnFechar) {
     btn.addEventListener("click", FecharModal);
 }
+
+window.addEventListener("beforeunload", ()=>{
+    event.preventDefault();
+
+    // Included for legacy support, e.g. Chrome/Edge < 119
+    event.returnValue = true;
+
+    return "Caso a página seja recarregada ou fechada, o desenho será perdido.";
+});
