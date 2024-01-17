@@ -23,6 +23,11 @@ export class CriarTexto {
 
         ctx.font = `${this.tamanhoFonte}px ${fonte}`;
         ctx.textAlign = "center";
-        ctx.fillText(texto, x, y);
+        ctx.textBaseline = "middle";
+        
+        const paragrafos = texto.split("\n");
+        for (let i = 0; i < paragrafos.length; i++) {
+            ctx.fillText(paragrafos[i], x, y+(i*this.tamanhoFonte));
+        }
     }
 }

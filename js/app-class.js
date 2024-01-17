@@ -1,4 +1,3 @@
-// import { ferramentas } from "./this.js";
 import { Pincel } from "./pincel-class.js";
 import { Borracha } from "./borracha-class.js";
 import { CriarTexto } from "./criarTexto-class.js";

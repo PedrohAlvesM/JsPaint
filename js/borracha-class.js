@@ -4,15 +4,6 @@ export class Borracha {
         this.apagando = false;
 
         this.icone = document.getElementById("borracha");
-        // ferramentas.icones.push(icone);
-
-        // icone.addEventListener("click", () => {
-        //     ferramentas.icones.forEach(elemento => elemento.classList.remove("nao-selecionado"));
-        //     ferramentas.GerenciaFerramenta(document.getElementsByClassName("ferramenta-borracha")[0]);
-        //     ferramentas.ferramentaSelecionada = this;
-
-        //     icone.classList.add("nao-selecionado");
-        // });
 
         const tamanhoBorracha = document.getElementsByClassName("tamanho-borracha");
         for (let i = 0; i < tamanhoBorracha.length; i++) {

@@ -16,16 +16,7 @@ export class MoverArea {
         this.mover = false;
 
         this.icone = document.getElementById("mover");
-        // ferramentas.icones.push(icone);
 
-        // icone.addEventListener("click", () => {
-        //     ferramentas.ferramentaSelecionada = this;
-
-        //     ferramentas.icones.forEach(elemento => elemento.classList.remove("nao-selecionado"));
-        //     ferramentas.GerenciaFerramenta(document.getElementsByClassName("ferramenta-mover")[0]);
-
-        //     icone.classList.add("nao-selecionado");
-        // });
         const area = document.getElementById("area-mover");
 
         document.addEventListener("dragover", (e) => {
