@@ -72,8 +72,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
 });
 
 document.getElementById("mostrar-ajuda").addEventListener("click", ()=>{
-    const modalAjuda = document.getElementById("tela-ajuda");
-    document.getElementsByTagName("main")[0].style.display = "none";
+    const modalAjuda = document.getElementById("modal-ajuda");
     
     AbrirModal(modalAjuda);
 });
@@ -90,10 +89,8 @@ function AbrirModal(modal) {
     
     if (estilo.display === "none") {
         pilhaMenuAberto.push(modal);
-        modal.style.setProperty("display", "flex");
+        modal.style.setProperty("display", "grid");
         modal.style.setProperty("animation-name", "moveIn");
-
-        // document.body.addEventListener("click", FecharModal);
     }
 }
 
@@ -108,7 +105,7 @@ function FecharModal() {
         const tempoAnimacaoInt = Number(tempoAnimacaoStr.slice(0, tempoAnimacaoStr.indexOf("s")));
         setTimeout(()=>{
             modal.style.setProperty("display", "none");
-        }, tempoAnimacaoInt*1000);
+        }, tempoAnimacaoInt*999);
     }
     document.body.removeEventListener("click", FecharModal);
 
