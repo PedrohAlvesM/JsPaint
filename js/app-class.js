@@ -67,7 +67,7 @@ export class App {
                 this.camadaAtual.addEventListener("mousemove", this.MovimentoMouse);
             }
             else if (this.ferramentaSelecionada === this.selecionaCor) {
-                this.selecionaCor.CorSelecionada(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+                this.selecionaCor.CorSelecionada(mouse.offsetX, mouse.offsetY, this.camadas);
             }
             else if (this.ferramentaSelecionada === this.texto) {
                 this.texto.CriaTexto(mouse.offsetX, mouse.offsetY, this.contextoAtual);

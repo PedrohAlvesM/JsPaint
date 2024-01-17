@@ -3,9 +3,15 @@ export class SelecionaCor {
         this.icone = document.getElementById("seleciona-cor");
     }
     
-    CorSelecionada(x, y, ctx) {
-        const corRGB = ctx.getImageData(x, y, 1, 1).data;
-
+    CorSelecionada(x, y, camadas) {
+        let corRGB;
+        for (let camada of camadas) {
+            corRGB = camada.getContext("2d").getImageData(x, y, 1, 1).data;
+            const pixelVazio = new Uint8ClampedArray(4);
+            if (corRGB[0] !== pixelVazio[0] && corRGB[1] !== pixelVazio[1] && corRGB[2] !== pixelVazio[2] && corRGB[3] !== pixelVazio[3]) {
+                break
+            }
+        }
         let corHex = this.RGBAParaHex(corRGB);
 
         document.querySelectorAll("input[type='color']").forEach(e => e.value = corHex);
