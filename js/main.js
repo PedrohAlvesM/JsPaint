@@ -125,3 +125,15 @@ window.addEventListener("beforeunload", ()=>{
 
     return "Caso a página seja recarregada ou fechada, o desenho será perdido.";
 });
+
+document.getElementById("salvar-branco").addEventListener("click", (e)=>{
+    if (e.target.innerText === "Salvar desenho com fundo branco") {
+        app.SalvarDesenho("jpeg");
+        e.target.innerText = "Salvar desenho sem fundo";
+    }
+    else {
+        app.SalvarDesenho("png");
+        e.target.innerText = "Salvar desenho com fundo branco";
+    }
+    
+});

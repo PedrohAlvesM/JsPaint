@@ -277,7 +277,7 @@ export class App {
         }
     }
 
-    SalvarDesenho() {
+    SalvarDesenho(formato="png") {
         const tmp = document.createElement("canvas");
         tmp.id = "criar-imagem";
 
@@ -287,12 +287,18 @@ export class App {
         tmp.height = this.camadaAtual.height;
 
         const ctx = tmp.getContext("2d");
+        if (formato === "jpeg") {
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            ctx.fillRect(0,0, tmp.width, tmp.height);
+            ctx.closePath();
+        }
 
         for (let camada of this.camadas) {
             ctx.drawImage(camada, 0, 0);
         }
 
-        const img = tmp.toDataURL("image/png", 1);
+        const img = tmp.toDataURL(`image/${formato}`, 1);
 
         const desenhoCompleto = document.createElement("img");
         desenhoCompleto.id = "desenho-completo";
@@ -301,7 +307,7 @@ export class App {
 
         const downloadImg = document.createElement("a");
         downloadImg.innerText = "Salvar desenho";
-        downloadImg.setAttribute("download", "desenho.png");
+        downloadImg.setAttribute("download", `desenho.${formato}`);
         downloadImg.href = img;
 
         const containerSalvar = document.getElementById("salvar");
