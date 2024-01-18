@@ -232,10 +232,10 @@ export class App {
     TrocarCamada(camada) {
         this.camadaAtual = camada;
         this.contextoAtual = this.camadaAtual.getContext("2d");
-        document.getElementsByTagName("main")[0].appendChild(this.camadaAtual);
+        this.camadas.forEach(camada => camada.style.zIndex = 0);
+        camada.style.zIndex = 1;
 
-        let camadas = document.querySelectorAll("div.camada-info");
-        for (let tmp of camadas) {
+        for (let tmp of document.querySelectorAll("div.camada-info")) {
             tmp.classList.add("nao-selecionado");
         }
         const indexContainer = this.camadas.findIndex((c) => c === camada);
