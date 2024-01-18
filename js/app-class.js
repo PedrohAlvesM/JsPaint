@@ -204,6 +204,7 @@ export class App {
         visivelBtn.classList.add("imagem");
         visivelBtn.src = "../img/eye-svgrepo-com.svg";
         visivelBtn.addEventListener("click", () => {
+            this.camadaAtual = novaCamada;
             if (this.camadaAtual.style.opacity > 0) {
                 this.camadaAtual.style.opacity = 0;
                 visivelBtn.src = "../img/eye-off-svgrepo-com.svg";
