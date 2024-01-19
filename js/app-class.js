@@ -170,22 +170,39 @@ export class App {
 
         //cria o selecionador da camada
         const containerNovaCamada = document.getElementById("camadas-container");
-        let containerCamadaInfo = document.createElement("div");
-        let visivelBtn = document.createElement("img");
-        let criarCamadaBtn = document.createElement("img");
-        let excluirBtn = document.createElement("img");
-        let novoTexto = document.createElement("p");
+        const containerCamadaInfo = document.createElement("div");
+
+        const containerOpacidade = document.createElement("div");
+        const iconeOpacidade = document.createElement("img");
+        const opacidadeSlider = document.createElement("input");
+
+        const criarCamadaBtn = document.createElement("img");
+        const excluirBtn = document.createElement("img");
+        const novoTexto = document.createElement("p");
 
         containerCamadaInfo.classList.add("camada-info", "selecionado");
+
+        iconeOpacidade.classList.add("imagem");
+        iconeOpacidade.src = "../img/eye-svgrepo-com.svg";
+        opacidadeSlider.type = "range";
+        opacidadeSlider.value = 100;
+
         criarCamadaBtn.classList.add("imagem");
         criarCamadaBtn.src = "../img/file-plus-alt-1-svgrepo-com.svg";
+
         excluirBtn.classList.add("imagem");
         excluirBtn.src = "../img/file-xmark-svgrepo-com.svg";
+
         novoTexto.classList.add("nome-camada");
 
+        opacidadeSlider.addEventListener("input", ()=>{
+            novaCamada.style.opacity = (Number(opacidadeSlider.value)/100);
+        });
+
         //adiciona lógica para trocar de camada
-        containerCamadaInfo.addEventListener("click", () => {
+        containerCamadaInfo.addEventListener("click", (e) => {
             this.TrocarCamada(novaCamada);
+            e.stopPropagation();
         });
 
         //coloca a nova camada como a selecionada
@@ -199,33 +216,19 @@ export class App {
         novoTexto.innerText = "Camada " + this.camadas.length;
         novoTexto.setAttribute("contenteditable", "true");
 
-
-        //lógica para as funções das camadas
-        visivelBtn.classList.add("imagem");
-        visivelBtn.src = "../img/eye-svgrepo-com.svg";
-        visivelBtn.addEventListener("click", () => {
-            this.camadaAtual = novaCamada;
-            if (this.camadaAtual.style.opacity > 0) {
-                this.camadaAtual.style.opacity = 0;
-                visivelBtn.src = "../img/eye-off-svgrepo-com.svg";
-            }
-            else {
-                this.camadaAtual.style.opacity = 1;
-                visivelBtn.src = "../img/eye-svgrepo-com.svg";
-            }
-        });
-
         excluirBtn.addEventListener("click", (e) => {
             this.DeletarCamada(novaCamada, containerCamadaInfo, e);
         });
         criarCamadaBtn.addEventListener("click", () => { this.CriaCamada(larguraTela, alturaTela) });
 
         //adiciona todos os novos elementos nos seus containers
+        containerOpacidade.appendChild(iconeOpacidade);
+        containerOpacidade.appendChild(opacidadeSlider);
+
         containerCamadaInfo.appendChild(novoTexto);
         containerCamadaInfo.appendChild(criarCamadaBtn);
         containerCamadaInfo.appendChild(excluirBtn);
-        containerCamadaInfo.appendChild(visivelBtn);
-
+        containerCamadaInfo.appendChild(containerOpacidade);
         containerNovaCamada.appendChild(containerCamadaInfo);
 
     }
@@ -296,6 +299,10 @@ export class App {
         }
 
         for (let camada of this.camadas) {
+            //colocar o filter no canvas temporario 
+            ctx.beginPath();
+            ctx.filter = `opacity(${Number(camada.style.opacity)*100}%)`;
+            ctx.closePath();
             ctx.drawImage(camada, 0, 0);
         }
 
