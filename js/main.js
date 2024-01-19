@@ -91,6 +91,7 @@ function AbrirModal(modal) {
         pilhaMenuAberto.push(modal);
         modal.style.setProperty("display", "grid");
         modal.style.setProperty("animation-name", "moveIn");
+        modal.style.setProperty("z-index", pilhaMenuAberto.length+1);
     }
 }
 
@@ -107,7 +108,6 @@ function FecharModal() {
             modal.style.setProperty("display", "none");
         }, tempoAnimacaoInt*999);
     }
-    document.body.removeEventListener("click", FecharModal);
 
     document.getElementsByTagName("main")[0].style.display = "grid";
     event.stopPropagation();
