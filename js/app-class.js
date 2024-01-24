@@ -95,6 +95,9 @@ export class App {
         });
 
         document.addEventListener("keydown", (tecla) => {
+            if (document.activeElement === document.getElementById("texto-inserido")) {
+                return
+            }
             const atalhoSimples = {
                 "p": () => {
                     this.ferramentaSelecionada = this.pincel;
@@ -127,7 +130,7 @@ export class App {
                     this.DesfazerAcao();
                 }
             }
-            else if (this.ferramentaSelecionada !== this.texto) {
+            else if (this.ferramentaSelecionada) {
                 if (atalhoSimples[tecla.key.toLocaleLowerCase()]) {
                     atalhoSimples[tecla.key.toLocaleLowerCase()]();
                 }
