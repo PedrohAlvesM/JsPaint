@@ -7,6 +7,8 @@ import { SelecionaCor } from "./selecionaCor-class.js";
 
 export class App {
     constructor() {
+        this.touchscreen = false;
+
         this.camadas = [];
         this.camadaAtual = null;
         this.contextoAtual = null;
@@ -53,7 +55,25 @@ export class App {
     }
 
     GerenciaEventosTela() {
-        this.camadaAtual.addEventListener("mousedown", (mouse) => {
+        let eventoComecar = "mousedown";
+        let eventoTerminar = "mouseup";
+        let eventoDeMovimento = "mousemove";
+
+        if (this.touchscreen) {
+            eventoComecar = "touchstart";
+            eventoTerminar = "touchend";
+            eventoDeMovimento = "touchmove";
+        }
+
+        this.camadaAtual.addEventListener(eventoComecar, (e)=>{
+            let coordenadas = {x: e.offsetX, y: e.offsetY};
+
+            if (eventoComecar === "touchstart")  {
+                e.preventDefault();
+                coordenadas.x =  e.touches[0].clientX;
+                coordenadas.y =  e.touches[0].clientY;
+            }
+
             if (this.pilhaAcoes.length > 9) {
                 this.pilhaAcoes.shift();
                 this.pilhaAcoes.push(this.contextoAtual.getImageData(0, 0, this.camadaAtual.width, this.camadaAtual.height));
@@ -61,86 +81,104 @@ export class App {
             else {
                 this.pilhaAcoes.push(this.contextoAtual.getImageData(0, 0, this.camadaAtual.width, this.camadaAtual.height));
             }
-
-
+    
+    
             if (this.ferramentaSelecionada === this.pincel || this.ferramentaSelecionada === this.borracha) {
-                this.camadaAtual.addEventListener("mousemove", this.MovimentoMouse);
+                this.camadaAtual.addEventListener(eventoDeMovimento, this.MovimentoMouse);
             }
             else if (this.ferramentaSelecionada === this.selecionaCor) {
-                this.selecionaCor.CorSelecionada(mouse.offsetX, mouse.offsetY, this.camadas);
+                this.selecionaCor.CorSelecionada(coordenadas.x, coordenadas.y, this.camadas);
             }
             else if (this.ferramentaSelecionada === this.texto) {
-                this.texto.CriaTexto(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+                this.texto.CriaTexto(coordenadas.x, coordenadas.y, this.contextoAtual);
             }
             else if (this.ferramentaSelecionada === this.formaGeometrica) {
                 this.formaGeometrica.ctx = this.contextoAtual;
                 this.formaGeometrica.DesenhaForma();
             }
             else if (this.ferramentaSelecionada === this.BaldeTinta) {
-                this.BaldeTinta.Pintar(this.contextoAtual, this.camadaAtual.width, this.camadaAtual.height, mouse.offsetX, mouse.offsetY);
+                this.BaldeTinta.Pintar(this.contextoAtual, this.camadaAtual.width, this.camadaAtual.height, coordenadas.x, coordenadas.y);
             }
-
         });
 
-        this.camadaAtual.addEventListener("mouseup", () => {
+        this.camadaAtual.addEventListener(eventoTerminar, (e)=>{
+            if (eventoTerminar === "touchend") e.preventDefault();
+
             if (this.borracha.apagando) {
-                this.camadaAtual.removeEventListener("mousemove", this.MovimentoMouse);
+                this.camadaAtual.removeEventListener(eventoDeMovimento, this.MovimentoMouse);
                 this.borracha.apagando = false;
             }
             else if (this.pincel.desenhando) {
-                this.camadaAtual.removeEventListener("mousemove", this.MovimentoMouse);
+                this.camadaAtual.removeEventListener(eventoDeMovimento, this.MovimentoMouse);
                 this.pincel.desenhando = false;
             }
             this.contextoAtual.beginPath();
         });
-
-        document.addEventListener("keydown", (tecla) => {
-            if (document.activeElement === document.getElementById("texto-inserido")) {
-                return
-            }
-            const atalhoSimples = {
-                "p": () => {
-                    this.ferramentaSelecionada = this.pincel;
-                    document.getElementById("pincel").click();
-                },
-                "b": () => {
-                    this.ferramentaSelecionada = this.borracha;
-                    document.getElementById("borracha").click();
-                },
-                "f": () => {
-                    this.ferramentaSelecionada = this.formaGeometrica;
-                    document.getElementById("forma-geometrica").click();
-                },
-                "m": () => {
-                    this.ferramentaSelecionada = this.mover;
-                    document.getElementById("mover").click();
-                },
-                "i": () => {
-                    this.ferramentaSelecionada = this.selecionaCor;
-                    document.getElementById("seleciona-cor").click();
-                },
-                "t": () => {
-                    this.ferramentaSelecionada = this.texto;
-                    document.getElementById("cria-texto").click();
-                },
-            }
-
-            if (tecla.ctrlKey) {
-                if (tecla.key.toLocaleLowerCase() === "z") {
+        
+        if (this.touchscreen) {
+            document.addEventListener("touchstart", (e)=>{
+                if (e.touches.length === 2) {
                     this.DesfazerAcao();
                 }
-            }
-            else if (this.ferramentaSelecionada) {
-                if (atalhoSimples[tecla.key.toLocaleLowerCase()]) {
-                    atalhoSimples[tecla.key.toLocaleLowerCase()]();
+            });
+        }
+        else {
+            document.addEventListener("keydown", (tecla) => {
+                if (document.activeElement === document.getElementById("texto-inserido")) {
+                    return
                 }
-            }
-
-
-        });
+                const atalhoSimples = {
+                    "p": () => {
+                        this.ferramentaSelecionada = this.pincel;
+                        document.getElementById("pincel").click();
+                    },
+                    "b": () => {
+                        this.ferramentaSelecionada = this.borracha;
+                        document.getElementById("borracha").click();
+                    },
+                    "f": () => {
+                        this.ferramentaSelecionada = this.formaGeometrica;
+                        document.getElementById("forma-geometrica").click();
+                    },
+                    "m": () => {
+                        this.ferramentaSelecionada = this.mover;
+                        document.getElementById("mover").click();
+                    },
+                    "i": () => {
+                        this.ferramentaSelecionada = this.selecionaCor;
+                        document.getElementById("seleciona-cor").click();
+                    },
+                    "t": () => {
+                        this.ferramentaSelecionada = this.texto;
+                        document.getElementById("cria-texto").click();
+                    },
+                }
+    
+                if (tecla.ctrlKey) {
+                    if (tecla.key.toLocaleLowerCase() === "z") {
+                        this.DesfazerAcao();
+                    }
+                }
+                else if (this.ferramentaSelecionada) {
+                    if (atalhoSimples[tecla.key.toLocaleLowerCase()]) {
+                        atalhoSimples[tecla.key.toLocaleLowerCase()]();
+                    }
+                }
+    
+    
+            });
+        }
     }
 
-    MovimentoMouse(mouse) {
+    MovimentoMouse(e) {
+        let coordenadas = {x: e.offsetX, y: e.offsetY};
+
+        if (e.touches)  {
+            e.preventDefault();
+            coordenadas.x =  e.touches[0].clientX - this.camadaAtual.offsetLeft;
+            coordenadas.y =  e.touches[0].clientY - this.camadaAtual.offsetTop;
+        }
+
         if (this.ferramentaSelecionada === null) {
             this.camadaAtual.removeEventListener("mousemove", this.MovimentoMouse);
         }
@@ -148,12 +186,12 @@ export class App {
         if (this.ferramentaSelecionada === this.pincel) {
             this.pincel.desenhando = true;
             this.borracha.apagando = false;
-            this.pincel.Desenhar(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+            this.pincel.Desenhar(coordenadas.x,coordenadas.y, this.contextoAtual);
         }
         else if (this.ferramentaSelecionada === this.borracha) {
             this.pincel.desenhando = false;
             this.borracha.apagando = true;
-            this.borracha.Apagar(mouse.offsetX, mouse.offsetY, this.contextoAtual);
+            this.borracha.Apagar(coordenadas.x,coordenadas.y, this.contextoAtual);
         }
     }
 

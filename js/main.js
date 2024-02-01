@@ -14,6 +14,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
     //valores digitados pelo usuário tem prioridade sobre as resoluções padrão
     if (resolucao !== "invalido" && (larguraTela === 0 && alturaTela === 0)) { 
         resolucaoDefinida = true;
+        app.touchscreen = navigator.maxTouchPoints > 0;
 
         const valoresResolucao = {
            "sdr": function(){app.Init(480,720)}, 
@@ -41,6 +42,9 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
 
             document.getElementById("criar-resolucao-alta").addEventListener("click", ()=>{
                 resolucaoDefinida = true;
+                
+                let touchScreen = navigator.maxTouchPoints > 0;
+                app.touchscreen = touchScreen;
                 app.Init(larguraTela, alturaTela);
                 
                 document.getElementById("configuracao").style.display = "none";

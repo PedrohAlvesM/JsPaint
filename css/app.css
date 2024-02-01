@@ -11,11 +11,18 @@ body, html {
     margin: 0;
     padding: 0;
     background-color: var(--cor-fundo-principal);
+    /* overflow: hidden; */
 }
 
 canvas {
     justify-self: center;
     border: 1px solid black;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 main {
@@ -65,6 +72,7 @@ section, .ferramentas{
     flex-direction: column;
     align-items: stretch;
     justify-content: space-around;
+    flex-wrap: nowrap;
 
     width: 99.9%;
     height: 200%;
@@ -97,10 +105,10 @@ section, .ferramentas{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: nowrap;
 
     width: 100%;
     height: auto;
-    /* background-color: #var(--cor-fundo-secundario); */
     border-bottom: 2px solid var(--cor-borda);
 }
 
@@ -122,7 +130,7 @@ section, .ferramentas{
     position: absolute;
     top: 50%;
     left: 50%;
-    z-index: 1;
+    z-index: 999;
     display: block;
 
     border: 2px dotted rgb(119, 119, 28);
@@ -130,6 +138,7 @@ section, .ferramentas{
     height: 200px;
     resize: both;
     overflow-x: auto;
+    cursor: grab;
 }
 
 .modal {

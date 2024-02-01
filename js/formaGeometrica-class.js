@@ -56,20 +56,33 @@ export class FormaGeometrica {
         this.posFinal.x = event.offsetX;
         this.posFinal.y = event.offsetY;
 
+        if (event.touches)  {
+            event.preventDefault();
+            this.posFinal.x =  event.touches[0].clientX - this.ctx.canvas.getBoundingClientRect().left;
+            this.posFinal.y =  event.touches[0].clientY - this.ctx.canvas.getBoundingClientRect().top;
+        }
+
         if (this.posInicio.x === null && this.posInicio.y === null) {
+            let eventoDeMovimento = "mousemove";
+            let eventoTerminar = "mouseup";
+            if (event.touches) {
+                eventoDeMovimento = "touchmove";
+                eventoTerminar = "touchend";
+            }
+
             this.posInicio.x = this.posFinal.x;
             this.posInicio.y = this.posFinal.y;
             this.estadoAntesDaForma = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
             
             const self = this.DesenhaForma.bind(this);
-            this.ctx.canvas.addEventListener("mousemove", self);
-            this.ctx.canvas.addEventListener("mouseup", () => {
+            this.ctx.canvas.addEventListener(eventoDeMovimento, self);
+            this.ctx.canvas.addEventListener(eventoTerminar, () => {
                 this.posInicio.x = null;
                 this.posInicio.y = null;
                 this.ctx.putImageData(this.estadoDepoisDaForma, 0, 0);
                 this.estadoAntesDaForma = null;
 
-                this.ctx.canvas.removeEventListener("mousemove", self);
+                this.ctx.canvas.removeEventListener(eventoDeMovimento, self);
             }, { once: true });
         }
 

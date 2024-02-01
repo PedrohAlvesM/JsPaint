@@ -19,22 +19,36 @@ export class MoverArea {
 
         const area = document.getElementById("area-mover");
 
-        document.addEventListener("dragover", (e) => {
+        
+        let eventoDeMovimento = "dragover";
+        if (navigator.maxTouchPoints > 0) {
+           eventoDeMovimento = "touchmove";
+        }
+
+        area.addEventListener(eventoDeMovimento, (e) => {
             e.preventDefault();
+            let coordenadas = {x: e.clientX, y: e.clientY};
+
+            if (e.touches)  {
+                coordenadas.x =  e.touches[0].clientX;
+                coordenadas.y =  e.touches[0].clientY;
+            }
+    
             const posicao = area.getBoundingClientRect();
             const menuLateral = document.getElementsByClassName("ferramentas")[0];
             const desconsiderar = menuLateral.getBoundingClientRect();
 
-            area.style.top = (e.clientY - posicao.height / 2) + "px";
-            area.style.left = (e.clientX - posicao.width / 2) + "px";
+            area.style.top = (coordenadas.y - posicao.height / 2) + "px";
+            area.style.left = (coordenadas.x - posicao.width / 2) + "px";
 
             if (this.mover) {
-                this.posFinal.x = posicao.x - desconsiderar.width;
+                this.posFinal.x = posicao.x - desconsiderar.right;
                 this.posFinal.y = posicao.y;
                 this.posFinal.largura = posicao.width;
                 this.posFinal.altura = posicao.height;
-            } else {
-                this.posInicial.x = posicao.x - desconsiderar.width;
+            } 
+            else {
+                this.posInicial.x = posicao.x - desconsiderar.right;
                 this.posInicial.y = posicao.y;
                 this.posInicial.largura = posicao.width;
                 this.posInicial.altura = posicao.height;
@@ -47,21 +61,26 @@ export class MoverArea {
 
     MoverArea(ctx) {
         if (this.mover) {
-            const areaMover = ctx.getImageData(this.posInicial.x, this.posInicial.y, this.posInicial.largura, this.posInicial.altura);
-            const areaSobreposta = ctx.getImageData(this.posFinal.x, this.posFinal.y, this.posFinal.largura, this.posFinal.altura);
+            const areaSobreposta = ctx.getImageData(this.posInicial.x, this.posInicial.y, this.posInicial.largura, this.posInicial.altura);
+            const areaSelecionada = ctx.getImageData(this.posFinal.x, this.posFinal.y, this.posFinal.largura, this.posFinal.altura);
+            
             const areaFinal = new ImageData(this.posFinal.largura, this.posFinal.altura);
-            for (let i = 0; i < areaMover.data.length; i++) {
-                if (areaMover.data[i] !== 0) {
-                    areaFinal.data[i] = areaMover.data[i];
+            for (let i = 0; i < areaSobreposta.data.length; i++) {
+                if (areaSobreposta.data[i] !== 0) {
+                    areaFinal.data[i] = areaSobreposta.data[i];
                 }
                 else {
-                    areaFinal.data[i] = areaSobreposta.data[i];
+                    areaFinal.data[i] = areaSelecionada.data[i];
                 }
             }
 
             ctx.putImageData(areaFinal, this.posFinal.x, this.posFinal.y);
 
             this.mover = false;
+            this.posInicial.x = 0;
+            this.posInicial.y = 0;
+            this.posInicial.largura = 0;
+            this.posInicial.altura = 0;
             document.getElementById("area-mover").style.resize = "both";
         }
     }
