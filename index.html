@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="img/brush-svgrepo-com.svg" type="image/x-icon">
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/slider.css">
+    <link rel="stylesheet" href="css/switch.css">
 
     <title>Desehando com JS</title>
 </head>
@@ -104,7 +107,9 @@
                 <div class="ferramenta-pincel">
                     <div>
                         <label>Tamanho do pincel</label>
-                        <input type="range" min="1" max="100" class="tamanho-pincel">
+                        <label class="slider">
+                            <input type="range" min="1" max="100" class="tamanho-pincel level">
+                        </label>
                         <input type="number" class="tamanho-pincel">
                     </div>
                     <div class="ferramenta-pincel">
@@ -116,7 +121,9 @@
                 <div class="ferramenta-borracha" style="display: none;">
                     <div>
                         <label>Tamanho da borracha</label>
-                        <input type="range" min="1" max="50" class="tamanho-borracha">
+                        <label class="slider">
+                            <input type="range" min="1" max="50" class="tamanho-borracha level">
+                        </label>
                         <input type="number" class="tamanho-borracha">
                     </div>
                 </div>
@@ -135,7 +142,10 @@
 
                     <div>
                         <label>Preenchimento</label>
-                        <input type="checkbox" id="preenchimento-forma-geometrica">
+                        <label class="switch">
+                            <input type="checkbox" id="preenchimento-forma-geometrica">
+                            <span class="slider-switch"></span>
+                        </label>
                     </div>
 
                     <div>
@@ -145,7 +155,10 @@
 
                     <div>
                         <label>Cor na linha</label>
-                        <input type="checkbox" id="linha-forma-geometrica" checked>
+                        <label class="switch">
+                            <input type="checkbox" id="linha-forma-geometrica" checked>
+                            <span class="slider-switch"></span>
+                        </label>
                     </div>
                     <div>
                         <label>Cor da linha</label>
@@ -168,7 +181,9 @@
 
                     <div>
                         <label>Tamanho da fonte</label>
-                        <input type="range" min="1" max="50" class="tamanho-fonte">
+                        <label class="slider">
+                            <input type="range" min="1" max="50" class="tamanho-fonte level">
+                        </label>
                         <input type="number" class="tamanho-fonte">
                     </div>
                     <div>
@@ -200,15 +215,12 @@
             </div>
 
             <div id="camadas-container">
-                <!-- <div class="camada-info selecionado">
-                    <p>Camada 1</p>
-                    <div class="excluir-camada imagem"></div>
-                    <div class="imagem visivel"></div>
-                </div> -->
 
             </div>
-            <p id="abrir-salvar">Salvar desenho</p>
+
+            <p id="abrir-salvar">Exportar desenho</p>
             <p id="mostrar-ajuda">Ajuda e dicas</p>
+            
         </section>
     </main>
 

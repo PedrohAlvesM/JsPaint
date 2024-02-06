@@ -23,30 +23,30 @@ export class FormaGeometrica {
 
         quadrado.addEventListener("click", () => {
             this.quadrado = true;
-            quadrado.classList.add("nao-selecionado");
+            quadrado.style.backgroundColor = "var(--cor-fundo-secundario)";
 
             this.circulo = false;
             this.reta = false;
-            circulo.classList.remove("nao-selecionado");
-            reta.classList.remove("nao-selecionado");
+            circulo.style.backgroundColor = "var(--cor-fundo-principal)";
+            reta.style.backgroundColor = "var(--cor-fundo-principal)";
         });
         circulo.addEventListener("click", () => {
             this.circulo = true;
-            circulo.classList.add("nao-selecionado");
+            circulo.style.backgroundColor = "var(--cor-fundo-secundario)";
 
             this.quadrado = false;
             this.reta = false;
-            quadrado.classList.remove("nao-selecionado");
-            reta.classList.remove("nao-selecionado");
+            quadrado.style.backgroundColor = "var(--cor-fundo-principal)";
+            reta.style.backgroundColor = "var(--cor-fundo-principal)";
         });
         reta.addEventListener("click", () => {
             this.reta = true;
-            reta.classList.add("nao-selecionado");
+            reta.style.backgroundColor = "var(--cor-fundo-secundario)";
 
             this.circulo = false;
             this.quadrado = false;
-            circulo.classList.remove("nao-selecionado");
-            quadrado.classList.remove("nao-selecionado");
+            circulo.style.backgroundColor = "var(--cor-fundo-principal)";
+            quadrado.style.backgroundColor = "var(--cor-fundo-principal)";
         });
 
         quadrado.click();

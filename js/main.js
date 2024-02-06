@@ -66,7 +66,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
         document.documentElement.style.background = "#fff";
         document.body.style.background = "#fff";
         
-        const sliders = document.getElementsByTagName("main")[0].querySelectorAll("input[type='range'], input[type='number']");
+        const sliders = document.getElementsByTagName("main")[0].querySelectorAll("input[type='range']:not(#camadas-container input[type='range']), input[type='number']");
         for (let s of sliders) {
             s.value = 5;
         }

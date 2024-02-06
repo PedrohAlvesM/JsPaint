@@ -26,8 +26,8 @@ export class App {
 
         for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor]) {
             ferramenta.icone.addEventListener("click", () => {
-                document.querySelectorAll(".ferramentas > img").forEach(icone => icone.classList.remove("nao-selecionado"));
-                ferramenta.icone.classList.add("nao-selecionado");
+                document.querySelectorAll(".ferramentas > img").forEach(icone => icone.style.backgroundColor = "");
+                ferramenta.icone.style.backgroundColor = "var(--cor-fundo-secundario)"
                 if (ferramenta.icone.id !== "seleciona-cor") {
                     const elementosApagar = document.querySelectorAll(".ferramentas-info > div");
     
@@ -215,6 +215,7 @@ export class App {
 
         const containerOpacidade = document.createElement("div");
         const iconeOpacidade = document.createElement("img");
+        const containerSlider = document.createElement("label");
         const opacidadeSlider = document.createElement("input");
 
         const criarCamadaBtn = document.createElement("img");
@@ -225,6 +226,11 @@ export class App {
 
         iconeOpacidade.classList.add("imagem");
         iconeOpacidade.src = "../img/eye-svgrepo-com.svg";
+
+        containerSlider.classList.add("slider");
+        containerSlider.style.display = "flex";
+
+        opacidadeSlider.classList.add("level");
         opacidadeSlider.type = "range";
         opacidadeSlider.value = 100;
 
@@ -249,9 +255,9 @@ export class App {
         //coloca a nova camada como a selecionada
         let camadas = containerNovaCamada.querySelectorAll("div.camada-info");
         for (let tmp of camadas) {
-            tmp.classList.add("nao-selecionado");
+            tmp.style.backgroundColor = "var(--cor-fundo-secundaria)";
         }
-        containerCamadaInfo.classList.remove("nao-selecionado");
+        containerCamadaInfo.style.backgroundColor = "";
         containerCamadaInfo.classList.add("selecionado");
 
         novoTexto.innerText = "Camada " + this.camadas.length;
@@ -263,15 +269,15 @@ export class App {
         criarCamadaBtn.addEventListener("click", () => { this.CriaCamada(larguraTela, alturaTela) });
 
         //adiciona todos os novos elementos nos seus containers
+        containerSlider.appendChild(opacidadeSlider)
         containerOpacidade.appendChild(iconeOpacidade);
-        containerOpacidade.appendChild(opacidadeSlider);
+        containerOpacidade.appendChild(containerSlider);
 
         containerCamadaInfo.appendChild(novoTexto);
         containerCamadaInfo.appendChild(criarCamadaBtn);
         containerCamadaInfo.appendChild(excluirBtn);
         containerCamadaInfo.appendChild(containerOpacidade);
         containerNovaCamada.appendChild(containerCamadaInfo);
-
     }
 
     TrocarCamada(camada) {
@@ -281,11 +287,10 @@ export class App {
         camada.style.zIndex = 1;
 
         for (let tmp of document.querySelectorAll("div.camada-info")) {
-            tmp.classList.add("nao-selecionado");
+            tmp.style.backgroundColor = "var(--cor-fundo-secundaria)";
         }
         const indexContainer = this.camadas.findIndex((c) => c === camada);
-        document.querySelectorAll("div.camada-info")[indexContainer].classList.remove("nao-selecionado");
-        document.querySelectorAll("div.camada-info")[indexContainer].classList.add("selecionado");
+        document.querySelectorAll("div.camada-info")[indexContainer].style.backgroundColor = "var(--cor-fundo-principal)";
     }
 
     DeletarCamada(camada, camadaInfo, clique) {
