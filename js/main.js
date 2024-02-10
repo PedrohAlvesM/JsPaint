@@ -75,7 +75,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
     }
 });
 
-document.getElementById("mostrar-ajuda").addEventListener("click", ()=>{
+document.getElementById("abrir-ajuda").addEventListener("click", ()=>{
     const modalAjuda = document.getElementById("modal-ajuda");
     
     AbrirModal(modalAjuda);
@@ -104,7 +104,7 @@ function FecharModal() {
         const modal = pilhaMenuAberto.pop();
         
         const estiloModal = getComputedStyle(modal);
-        modal.style.setProperty("animation-name", "fadeOut");
+        modal.style.setProperty("animation-name", "moveOut");
 
         const tempoAnimacaoStr = estiloModal.animationDuration;
         const tempoAnimacaoInt = Number(tempoAnimacaoStr.slice(0, tempoAnimacaoStr.indexOf("s")));

@@ -3,22 +3,12 @@
     place-items: center;
     
     overflow-y: scroll;
-}
-
-#modal-ajuda {
-    display: grid;
-    place-items: center;
-    
-    overflow-y: scroll;
-}
-
-#modal-ajuda, .modal {
     position: absolute;
     animation: moveIn 1s linear;
     left: 50%;  
     top: 50%;
     transform: translate(-50%, -50%);
-
+    
     width: 50%;
     height: 75%;
     background-color: var(--cor-fundo-secundario);
@@ -26,11 +16,12 @@
     border-radius: 10px;
 }
 
+
 #modal-ajuda, #mensagem, #resolucao-alta-demais {
     display: none;
 }
 
-#mostrar-ajuda, #abrir-salvar {
+#abrir-ajuda, #abrir-salvar {
     cursor: pointer;
 }
 
@@ -45,7 +36,7 @@
 	}
 }
 
-@keyframes fadeOut {
+@keyframes moveOut {
     from {
         top: 50%;
         left: 50%;
