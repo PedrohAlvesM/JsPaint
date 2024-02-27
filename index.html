@@ -15,7 +15,7 @@
 
 <body>
 
-    <section class="modal" id="configuracao" style="display: flex;">
+    <section class="modal" id="modal-configuracao">
         <div>
             <label>Largura</label>
             <input type="number" id="largura-tela">
@@ -80,7 +80,7 @@
         </button>
     </section>
     
-    <section class="modal" id="salvar" style="display: none;">
+    <section class="modal" id="modal-exportar">
         <h1>Salvando desenho</h1>
 
         <button id="salvar-branco">Salvar desenho com fundo branco</button>
@@ -90,7 +90,28 @@
         </button>
     </section>
 
-    <main style="display: none;">
+    <section class="modal" id="modal-salvar">
+        <h1>Salvando desenho</h1>
+
+        <p>Importante: ativando a opção de salvar o desenho o usuário está permitindo que o site JsPaint utilize o seu armezenamento interno, através do navegador Web, para salvar os desenhos. </p>
+
+        <div>
+            <span>Quero salvar o estado do desenho localmente</span>
+            <label class="switch">
+                <input type="checkbox" id="permitido-salvar-desenho" checked>
+                <span class="slider-switch"></span>
+            </label>
+        </div>
+
+        <div>
+            <label for="nome-desenho">Nome do desenho: </label>
+            <input type="text" id="nome-desenho">
+        </div>
+
+        <button class="fechar-modal">Fechar</button>
+    </section>
+
+    <main>
         <section class="ferramentas">
             <img src="../img/brush-svgrepo-com.svg" class="imagem" id="pincel">
             <img src="../img/eraser-svgrepo-com.svg" class="imagem" id="borracha">
@@ -220,8 +241,9 @@
 
 
             <div class="opcoes-desenho">
-                <button id="abrir-salvar">Exportar desenho</button>
+                <button id="abrir-exportar">Exportar desenho</button>
                 <button id="abrir-ajuda">Ajuda e dicas</button>
+                <button id="abrir-salvar">Salvar Desenho</button>
             </div>
             
         </section>

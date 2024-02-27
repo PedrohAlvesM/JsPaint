@@ -124,7 +124,7 @@ export class App {
         }
         else {
             document.addEventListener("keydown", (tecla) => {
-                if (document.activeElement === document.getElementById("texto-inserido")) {
+                if (document.activeElement === document.getElementById("texto-inserido") || document.activeElement === document.getElementById("nome-desenho")) {
                     return
                 }
                 const atalhoSimples = {
@@ -195,7 +195,7 @@ export class App {
         }
     }
 
-    CriaCamada(larguraTela, alturaTela) {
+    CriaCamada(larguraTela, alturaTela, nomeCamada="") {
         //cria a camada 
         const container = document.getElementsByTagName("main")[0];
         const novaCamada = document.createElement("canvas");
@@ -231,6 +231,7 @@ export class App {
         containerSlider.style.display = "flex";
 
         opacidadeSlider.classList.add("level");
+        opacidadeSlider.classList.add("opacidade-camada");
         opacidadeSlider.type = "range";
         opacidadeSlider.value = 100;
 
@@ -260,7 +261,7 @@ export class App {
         containerCamadaInfo.style.backgroundColor = "";
         containerCamadaInfo.classList.add("selecionado");
 
-        novoTexto.innerText = "Camada " + this.camadas.length;
+        novoTexto.innerText = nomeCamada === "" ? "Camada "+(camadas.length+1) : nomeCamada;
         novoTexto.setAttribute("contenteditable", "true");
 
         excluirBtn.addEventListener("click", (e) => {
@@ -331,8 +332,6 @@ export class App {
         const tmp = document.createElement("canvas");
         tmp.id = "criar-imagem";
 
-        document.body.appendChild(tmp);
-
         tmp.width = this.camadaAtual.width;
         tmp.height = this.camadaAtual.height;
 
@@ -345,7 +344,6 @@ export class App {
         }
 
         for (let camada of this.camadas) {
-            //colocar o filter no canvas temporario 
             ctx.beginPath();
             ctx.filter = `opacity(${Number(camada.style.opacity)*100}%)`;
             ctx.closePath();
@@ -364,10 +362,126 @@ export class App {
         downloadImg.setAttribute("download", `desenho.${formato}`);
         downloadImg.href = img;
 
-        const containerSalvar = document.getElementById("salvar");
-        containerSalvar.querySelectorAll("img, a").forEach(elemento => elemento.remove());
+        const containerExportar = document.getElementById("modal-exportar");
+        containerExportar.querySelectorAll("img, a").forEach(elemento => elemento.remove());
 
-        containerSalvar.getElementsByTagName("h1")[0].insertAdjacentElement("afterend", desenhoCompleto);
-        containerSalvar.getElementsByClassName("fechar-modal")[0].insertAdjacentElement("beforebegin", downloadImg);
+        containerExportar.getElementsByTagName("h1")[0].insertAdjacentElement("afterend", desenhoCompleto);
+        containerExportar.getElementsByClassName("fechar-modal")[0].insertAdjacentElement("beforebegin", downloadImg);
     }
+
+    SalvarEstadoDesenho() {
+        let desenhoAtual = {
+            nome: "",
+            largura: this.camadaAtual.width,
+            altura: this.camadaAtual.height,
+            camadas: [],
+        }
+
+        desenhoAtual.nome = document.getElementById("nome-desenho").value;
+
+        const nomeCamadas = document.getElementsByClassName("nome-camada");
+        const opacidadeCamadas = document.getElementsByClassName("opacidade-camada");
+
+        for (let i = 0; i < nomeCamadas.length; i++) {
+            let tmp = {
+                nome: "",
+                opacidade: "",
+                desenhoCamada: "",
+            }
+            tmp.nome = nomeCamadas[i].innerText;
+            tmp.opacidade = opacidadeCamadas[i].value;
+
+            desenhoAtual.camadas.push(tmp);
+        }
+        for (let i = 0; i < this.camadas.length; i++) {
+            let desenhoCamada = this.camadas[i].toDataURL("image/png", 1);
+            desenhoAtual.camadas[i].desenhoCamada = desenhoCamada;
+        }
+
+        const dadosStr = localStorage.getItem("desenhosSalvos");
+        if (dadosStr !== null) {
+            const dadosDesenhos = JSON.parse(dadosStr);
+
+            let desenhoExiste = false;
+            for (let i = 0; i < dadosDesenhos.length; i++) {
+                if (desenho.nome === desenhoAtual.nome) {
+                    desenhoExiste = true;
+                    
+                    dadosDesenhos[i] = desenhoAtual;
+                }
+            }
+
+            if (!desenhoExiste) {
+                dadosDesenhos.push(desenhoAtual);
+            }
+            localStorage.setItem("desenhosSalvos", JSON.stringify(dadosDesenhos));
+        }
+        else {
+            let desenhosSalvos = [];
+            desenhosSalvos.push(desenhoAtual);
+            localStorage.setItem("desenhosSalvos", JSON.stringify(desenhosSalvos));
+        }
+    }
+
+    CarregarDesenho(i) {
+        const dadosStr = localStorage.getItem("desenhosSalvos");
+        const desenhosSalvos = JSON.parse(dadosStr);
+        const desenho = desenhosSalvos[i];
+
+        for (let camada of desenho.camadas) {
+            this.CriaCamada(desenho.largura, desenho.altura, camada.nomeCamada);
+
+            let imgTmp = new Image();
+            imgTmp.src = camada.desenhoCamada;
+            this.contextoAtual.drawImage(imgTmp, 0,0);
+        }
+
+        document.getElementById("modal-configuracao").style.display = "none";
+        document.getElementsByTagName("main")[0].style.display = "grid";
+        document.documentElement.style.background = "#fff";
+        document.body.style.background = "#fff";
+        
+        const sliders = document.getElementsByTagName("main")[0].querySelectorAll("input[type='range']:not(#camadas-container input[type='range']), input[type='number']");
+        for (let s of sliders) {
+            s.value = 5;
+        }    
+        document.getElementById("pincel").click();
+    }
+    
+    ApagarDesenho(indice) {
+        const dadosStr = localStorage.getItem("desenhosSalvos");
+        const desenhosSalvos = JSON.parse(dadosStr);
+        desenhosSalvos.splice(indice, indice+1);
+        
+        localStorage.setItem("desenhosSalvos", JSON.stringify(desenhosSalvos));
+    }   
 }
+
+
+/**
+ * desenhosSalvos: [
+   {
+      nome: "",
+      largura: 800,
+      altura: 1200,
+      camadas: [
+         0: {
+            nomeCamada: "Camada 1",
+            visibilidade: 0 - 100,
+            desenhoCamada: base64,
+         },
+         1: {
+            nomeCamada: "Perna",
+            visibilidade: 0 - 100,
+            desenhoCamada: base64,
+         },
+         2: {
+            nomeCamada: "Camada 2",
+            visibilidade: 0 - 100,
+            desenhoCamada: base64,
+         },
+      ]
+	
+   },
+]
+ */

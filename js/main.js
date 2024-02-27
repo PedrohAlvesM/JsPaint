@@ -4,6 +4,9 @@ const app = new App();
 let pilhaMenuAberto = [];
 const btnFechar = document.getElementsByClassName("fechar-modal");
 
+document.getElementById("modal-configuracao").style.display = "grid";
+VerificaDesenhosSalvos();
+
 document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
     let resolucaoDefinida = false;
 
@@ -47,7 +50,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
                 app.touchscreen = touchScreen;
                 app.Init(larguraTela, alturaTela);
                 
-                document.getElementById("configuracao").style.display = "none";
+                document.getElementById("modal-configuracao").style.display = "none";
                 document.getElementsByTagName("main")[0].style.display = "grid";
                 document.body.style.backgroundColor = "white";
                 document.documentElement.style.backgroundColor = "white";
@@ -61,7 +64,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
         }
     }
     if (resolucaoDefinida) {
-        document.getElementById("configuracao").style.display = "none";
+        document.getElementById("modal-configuracao").style.display = "none";
         document.getElementsByTagName("main")[0].style.display = "grid";
         document.documentElement.style.background = "#fff";
         document.body.style.background = "#fff";
@@ -69,8 +72,7 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
         const sliders = document.getElementsByTagName("main")[0].querySelectorAll("input[type='range']:not(#camadas-container input[type='range']), input[type='number']");
         for (let s of sliders) {
             s.value = 5;
-        }
-    
+        }    
         document.getElementById("pincel").click();
     }
 });
@@ -81,9 +83,15 @@ document.getElementById("abrir-ajuda").addEventListener("click", ()=>{
     AbrirModal(modalAjuda);
 });
 
-document.getElementById("abrir-salvar").addEventListener("click", ()=>{
-    const modalSalvar = document.getElementById("salvar");
+document.getElementById("abrir-exportar").addEventListener("click", ()=>{
+    const modalExportar = document.getElementById("modal-exportar");
     app.SalvarDesenho();
+    
+    AbrirModal(modalExportar);
+});
+
+document.getElementById("abrir-salvar").addEventListener("click", ()=>{
+    const modalSalvar = document.getElementById("modal-salvar");
     
     AbrirModal(modalSalvar);
 });
@@ -111,10 +119,50 @@ function FecharModal() {
         setTimeout(()=>{
             modal.style.setProperty("display", "none");
         }, tempoAnimacaoInt*999);
+
+        if (modal.id === "modal-salvar" && document.querySelector("#permitido-salvar-desenho").checked) {
+            app.SalvarEstadoDesenho();
+        }
     }
 
     document.getElementsByTagName("main")[0].style.display = "grid";
     event.stopPropagation();
+}
+
+function VerificaDesenhosSalvos() {
+    const desenhosSalvos = localStorage.getItem("desenhosSalvos");
+    if (desenhosSalvos !== null) {
+        const dadosDesenhos = JSON.parse(desenhosSalvos);
+        const containerDesenhos = document.createElement("div");
+        
+        for (let i = 0; i < dadosDesenhos.length; i++) {
+            const container = document.createElement("div");
+            container.classList.add("container-seleciona-desenho");
+
+            const opcaoDesenho = document.createElement("label");
+            opcaoDesenho.innerText = dadosDesenhos[i].nome;
+
+            const carregarDesenhoBtn = document.createElement("button");
+            carregarDesenhoBtn.addEventListener("click", ()=>{app.CarregarDesenho(i)});
+            carregarDesenhoBtn.textContent = "Carregar Desenho";
+
+            const apagarDesenhoBtn = document.createElement("button");
+            apagarDesenhoBtn.addEventListener("click", ()=>{
+                apagarDesenhoBtn.parentElement.remove();
+                app.ApagarDesenho(i);
+            });
+            apagarDesenhoBtn.textContent = "Apagar desenho";
+
+
+            container.appendChild(opcaoDesenho);
+            container.appendChild(apagarDesenhoBtn);
+            container.appendChild(carregarDesenhoBtn);
+
+            containerDesenhos.appendChild(container);
+        }
+
+        document.getElementById("resolucao-escolhida").insertAdjacentElement("afterend", containerDesenhos);
+    }
 }
 
 for (let btn of btnFechar) {
