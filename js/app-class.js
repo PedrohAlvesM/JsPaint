@@ -14,6 +14,8 @@ export class App {
         this.contextoAtual = null;
         this.pilhaAcoes = [];
 
+        this.zoom = 1.0;
+
         this.ferramentaSelecionada = null;
         this.pincel = new Pincel();
         this.borracha = new Borracha();
@@ -23,6 +25,7 @@ export class App {
         this.selecionaCor = new SelecionaCor();
 
         this.MovimentoMouse = this.MovimentoMouse.bind(this);
+        this.AtualizarZoom = this.AtualizarZoom.bind(this);
 
         for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor]) {
             ferramenta.icone.addEventListener("click", () => {
@@ -54,6 +57,36 @@ export class App {
         this.camadaAtual.height = altura;
     }
 
+    AtualizarZoom(e) {
+        e.preventDefault();
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        const posicao = document.body.getBoundingClientRect();
+        
+        const mouseXContainer = mouseX - posicao.left;
+        const mouseYContainer = mouseY - posicao.top;
+    
+        const origemX = (mouseXContainer / posicao.width) * 100;
+        const origemY = (mouseYContainer / posicao.height) * 100;
+    
+        document.body.style.transformOrigin = `${origemX}% ${origemY}%`;
+    
+        if (e.deltaY < 0) {
+          this.zoom += 0.1;
+        } else {
+          this.zoom -= 0.1;
+        }
+    
+        this.zoom = Math.max(1, this.zoom);
+        document.body.style.transform = `scale(${this.zoom})`;
+    }
+
+    ResetarZoom() {
+        this.zoom = 1;
+        document.body.style.transformOrigin = 'center center';
+        document.body.style.transform = `scale(${this.zoom})`;
+    }
+
     GerenciaEventosTela() {
         let eventoComecar = "mousedown";
         let eventoTerminar = "mouseup";
@@ -69,6 +102,7 @@ export class App {
             let coordenadas = {x: e.offsetX, y: e.offsetY};
 
             if (eventoComecar === "touchstart")  {
+                if (e.touches.lenght != 1) return
                 e.preventDefault();
                 coordenadas.x =  e.touches[0].clientX;
                 coordenadas.y =  e.touches[0].clientY;
@@ -117,7 +151,7 @@ export class App {
         
         if (this.touchscreen) {
             document.addEventListener("touchstart", (e)=>{
-                if (e.touches.length === 2) {
+                if (e.touches.length === 3) {
                     this.DesfazerAcao();
                 }
             });
@@ -152,6 +186,7 @@ export class App {
                         this.ferramentaSelecionada = this.texto;
                         document.getElementById("cria-texto").click();
                     },
+                    "0": this.ResetarZoom,
                 }
     
                 if (tecla.ctrlKey) {
@@ -208,6 +243,8 @@ export class App {
         this.contextoAtual = this.camadaAtual.getContext("2d");
         this.DefineTamanhoTela(larguraTela, alturaTela);
         this.GerenciaEventosTela();
+
+        novaCamada.addEventListener("wheel", this.AtualizarZoom);
 
         //cria o selecionador da camada
         const containerNovaCamada = document.getElementById("camadas-container");
@@ -456,32 +493,3 @@ export class App {
         localStorage.setItem("desenhosSalvos", JSON.stringify(desenhosSalvos));
     }   
 }
-
-
-/**
- * desenhosSalvos: [
-   {
-      nome: "",
-      largura: 800,
-      altura: 1200,
-      camadas: [
-         0: {
-            nomeCamada: "Camada 1",
-            visibilidade: 0 - 100,
-            desenhoCamada: base64,
-         },
-         1: {
-            nomeCamada: "Perna",
-            visibilidade: 0 - 100,
-            desenhoCamada: base64,
-         },
-         2: {
-            nomeCamada: "Camada 2",
-            visibilidade: 0 - 100,
-            desenhoCamada: base64,
-         },
-      ]
-	
-   },
-]
- */

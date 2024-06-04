@@ -16,6 +16,9 @@ body, html {
 canvas {
     justify-self: center;
     border: 1px solid black;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
