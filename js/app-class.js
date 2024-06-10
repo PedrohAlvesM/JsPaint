@@ -61,7 +61,7 @@ export class App {
         e.preventDefault();
         const mouseX = e.clientX;
         const mouseY = e.clientY;
-        const posicao = document.body.getBoundingClientRect();
+        const posicao = this.camadaAtual.getBoundingClientRect();
         
         const mouseXContainer = mouseX - posicao.left;
         const mouseYContainer = mouseY - posicao.top;
@@ -69,7 +69,7 @@ export class App {
         const origemX = (mouseXContainer / posicao.width) * 100;
         const origemY = (mouseYContainer / posicao.height) * 100;
     
-        document.body.style.transformOrigin = `${origemX}% ${origemY}%`;
+        this.camadaAtual.style.transformOrigin = `${origemX}% ${origemY}%`;
     
         if (e.deltaY < 0) {
           this.zoom += 0.1;
@@ -78,7 +78,7 @@ export class App {
         }
     
         this.zoom = Math.max(1, this.zoom);
-        document.body.style.transform = `scale(${this.zoom})`;
+        this.camadaAtual.style.transform = `scale(${this.zoom})`;
     }
 
     ResetarZoom() {

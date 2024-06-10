@@ -11,6 +11,7 @@ body, html {
     margin: 0;
     padding: 0;
     background-color: var(--cor-fundo-principal);
+    overflow: clip;
 }
 
 canvas {
@@ -72,6 +73,7 @@ section, .ferramentas{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    z-index: 2;
 }
 
 .ferramentas-info, .ferramentas-info > * {
