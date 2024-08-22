@@ -41,15 +41,16 @@ export class MoverArea {
             area.style.top = (coordenadas.y - posicao.height / 2) + "px";
             area.style.left = (coordenadas.x - posicao.width / 2) + "px";
 
+            const considerarScroll = document.getElementsByClassName("container-camada")[0];
             if (this.mover) {
-                this.posFinal.x = posicao.x - desconsiderar.right;
-                this.posFinal.y = posicao.y;
+                this.posFinal.x = posicao.x - desconsiderar.right + considerarScroll.scrollLeft;
+                this.posFinal.y = posicao.y + considerarScroll.scrollTop;
                 this.posFinal.largura = posicao.width;
                 this.posFinal.altura = posicao.height;
             } 
             else {
-                this.posInicial.x = posicao.x - desconsiderar.right;
-                this.posInicial.y = posicao.y;
+                this.posInicial.x = posicao.x - desconsiderar.right + considerarScroll.scrollLeft;
+                this.posInicial.y = posicao.y + considerarScroll.scrollTop;
                 this.posInicial.largura = posicao.width;
                 this.posInicial.altura = posicao.height;
             }

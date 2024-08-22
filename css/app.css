@@ -11,7 +11,6 @@ body, html {
     margin: 0;
     padding: 0;
     background-color: var(--cor-fundo-principal);
-    overflow: clip;
 }
 
 canvas {
@@ -68,7 +67,7 @@ a {
     padding: 10px 0;
 }
 
-section, .ferramentas{
+.ferramentas {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -76,20 +75,38 @@ section, .ferramentas{
     z-index: 2;
 }
 
-.ferramentas-info, .ferramentas-info > * {
+.sidebar {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
-
+    
     width: 100%;
     height: 100%;
-    border-bottom: 2px solid var(--cor-borda);
+}
+
+.ferramentas-info {
+    height: 50%;
+}
+
+.ferramentas-info > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    border: 2px solid var(--cor-borda);
+}
+
+.container-camada {
+    display: grid;
+    width: 720px;
+    height: 480px;
+    overflow: scroll;
 }
 
 .camada {
-    grid-column: 2/3;
+    grid-column: 1/1;
     grid-row: 1/1;
 }
 .camada:hover {
@@ -115,16 +132,16 @@ section, .ferramentas{
     cursor: pointer;
 }
 
-#camadas-container {
+#container-camadas-info {
     width: 100%;
-    height: 33%;
+    height: 25%;
     overflow-y: scroll;
     background-color: var(--cor-fundo-secundario);
 }
 
 .opcoes-desenho {
     width: 100%;
-    height: 33%;
+    height: 25%;
 }
 
 .container-seleciona-desenho {
@@ -141,7 +158,7 @@ section, .ferramentas{
     position: absolute;
     top: 50%;
     left: 50%;
-    z-index: 999;
+    z-index: 2;
     display: block;
 
     border: 2px dotted rgb(119, 119, 28);
@@ -165,4 +182,33 @@ section, .ferramentas{
 
 #desenho-completo {
     border: 1px solid var(--cor-borda);
+}
+
+@media only screen and (max-width: 600px) {
+    .container-camada {
+        width: 480px;
+        height: 320px;
+    }
+}
+.container-camada::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.container-camada::-webkit-scrollbar:vertical {
+    width: 12px;
+}
+
+.container-camada::-webkit-scrollbar:horizontal {
+    height: 12px;
+}
+
+.container-camada::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 2px solid #000;
+}
+
+.container-camada::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: rgb(82, 82, 82);
 }

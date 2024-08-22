@@ -25,7 +25,8 @@ export class App {
         this.selecionaCor = new SelecionaCor();
 
         this.MovimentoMouse = this.MovimentoMouse.bind(this);
-        this.AtualizarZoom = this.AtualizarZoom.bind(this);
+        this.AtualizarZoomMouse = this.AtualizarZoomMouse.bind(this);
+        this.AtualizarZoomTouch = this.AtualizarZoomTouch.bind(this);
 
         for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor]) {
             ferramenta.icone.addEventListener("click", () => {
@@ -57,7 +58,7 @@ export class App {
         this.camadaAtual.height = altura;
     }
 
-    AtualizarZoom(e) {
+    AtualizarZoomMouse(e) {
         e.preventDefault();
         const mouseX = e.clientX;
         const mouseY = e.clientY;
@@ -69,16 +70,42 @@ export class App {
         const origemX = (mouseXContainer / posicao.width) * 100;
         const origemY = (mouseYContainer / posicao.height) * 100;
     
-        this.camadaAtual.style.transformOrigin = `${origemX}% ${origemY}%`;
-    
+        
         if (e.deltaY < 0) {
           this.zoom += 0.1;
         } else {
-          this.zoom -= 0.1;
+            this.zoom -= 0.1;
         }
-    
+        
         this.zoom = Math.max(1, this.zoom);
-        this.camadaAtual.style.transform = `scale(${this.zoom})`;
+        for (const camada of this.camadas) {
+            camada.style.transformOrigin = `${origemX}% ${origemY}%`;
+            camada.style.transform = `scale(${this.zoom})`;       
+        }
+    }
+    
+    AtualizarZoomTouch(e, distanciaInicial) {
+        e.preventDefault();
+
+        const distanciaAtual = Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY
+        );
+        const posicao = this.camadaAtual.getBoundingClientRect();
+        
+        const touchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const touchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const touchXContainer = touchMidX - posicao.left;
+        const touchYContainer = touchMidY - posicao.top;
+
+        const origemX = (touchXContainer / posicao.width) * 100;
+        const origemY = (touchYContainer / posicao.height) * 100;
+        
+        this.zoom = Math.max(1, (distanciaAtual / distanciaInicial));
+        for (const camada of this.camadas) {
+            camada.style.transformOrigin = `${origemX}% ${origemY}%`;
+            camada.style.transform = `scale(${this.zoom})`;       
+        }
     }
 
     ResetarZoom() {
@@ -102,10 +129,20 @@ export class App {
             let coordenadas = {x: e.offsetX, y: e.offsetY};
 
             if (eventoComecar === "touchstart")  {
-                if (e.touches.lenght != 1) return
                 e.preventDefault();
-                coordenadas.x =  e.touches[0].clientX;
-                coordenadas.y =  e.touches[0].clientY;
+                const considerarScroll = document.getElementsByClassName("container-camada")[0];
+                coordenadas.x =  e.touches[0].offsetX + considerarScroll.scrollLeft;
+                coordenadas.y =  e.touches[0].offsetY + considerarScroll.scrollTop;
+                
+                if (e.targetTouches.length === 2) {
+                    this.pincel.desenhando = false;
+                    this.borracha.apagando = false;
+    
+                    const distanciaInicial = Math.hypot(e.targetTouches[0].pageX - e.targetTouches[1].pageX, e.targetTouches[0].pageY - e.targetTouches[1].pageY);
+                    this.camadaAtual.addEventListener("touchmove", (e)=>{
+                        this.AtualizarZoomTouch(e, distanciaInicial);
+                    });
+                }
             }
 
             if (this.pilhaAcoes.length > 9) {
@@ -208,10 +245,11 @@ export class App {
     MovimentoMouse(e) {
         let coordenadas = {x: e.offsetX, y: e.offsetY};
 
-        if (e.touches)  {
+        if (e.touches && e.touches.length === 1)  {
             e.preventDefault();
-            coordenadas.x =  e.touches[0].clientX - this.camadaAtual.offsetLeft;
-            coordenadas.y =  e.touches[0].clientY - this.camadaAtual.offsetTop;
+            const considerarScroll = document.getElementsByClassName("container-camada")[0];
+            coordenadas.x =  e.touches[0].pageX - this.camadaAtual.offsetLeft + considerarScroll.scrollLeft;
+            coordenadas.y =  e.touches[0].pageY - this.camadaAtual.offsetTop + considerarScroll.scrollTop;
         }
 
         if (this.ferramentaSelecionada === null) {
@@ -232,7 +270,7 @@ export class App {
 
     CriaCamada(larguraTela, alturaTela, nomeCamada="") {
         //cria a camada 
-        const container = document.getElementsByTagName("main")[0];
+        const container = document.getElementsByClassName("container-camada")[0];
         const novaCamada = document.createElement("canvas");
         container.appendChild(novaCamada);
 
@@ -244,10 +282,10 @@ export class App {
         this.DefineTamanhoTela(larguraTela, alturaTela);
         this.GerenciaEventosTela();
 
-        novaCamada.addEventListener("wheel", this.AtualizarZoom);
+        novaCamada.addEventListener("wheel", this.AtualizarZoomMouse);
 
         //cria o selecionador da camada
-        const containerNovaCamada = document.getElementById("camadas-container");
+        const containerNovaCamada = document.getElementById("container-camadas-info");
         const containerCamadaInfo = document.createElement("div");
 
         const containerOpacidade = document.createElement("div");
@@ -478,7 +516,7 @@ export class App {
         document.documentElement.style.background = "#fff";
         document.body.style.background = "#fff";
         
-        const sliders = document.getElementsByTagName("main")[0].querySelectorAll("input[type='range']:not(#camadas-container input[type='range']), input[type='number']");
+        const sliders = document.getElementsByTagName("main")[0].querySelectorAll("input[type='range']:not(#container-camadas-info input[type='range']), input[type='number']");
         for (let s of sliders) {
             s.value = 5;
         }    
