@@ -272,6 +272,7 @@ export class App {
         //cria a camada 
         const container = document.getElementsByClassName("container-camada")[0];
         const novaCamada = document.createElement("canvas");
+        novaCamada.style.opacity = 1.0;
         container.appendChild(novaCamada);
 
         this.camadas.push(novaCamada);
@@ -478,11 +479,12 @@ export class App {
             const dadosDesenhos = JSON.parse(dadosStr);
 
             let desenhoExiste = false;
-            for (let i = 0; i < dadosDesenhos.length; i++) {
+            for (let desenho of dadosDesenhos) {
                 if (desenho.nome === desenhoAtual.nome) {
                     desenhoExiste = true;
                     
-                    dadosDesenhos[i] = desenhoAtual;
+                    Object.assign(desenho.camadas, desenhoAtual.camadas);
+                    break;
                 }
             }
 
@@ -502,15 +504,22 @@ export class App {
         const dadosStr = localStorage.getItem("desenhosSalvos");
         const desenhosSalvos = JSON.parse(dadosStr);
         const desenho = desenhosSalvos[i];
+        const opacidadeSlider = document.getElementsByClassName("opacidade-camada");
 
-        for (let camada of desenho.camadas) {
-            this.CriaCamada(desenho.largura, desenho.altura, camada.nomeCamada);
-
-            let imgTmp = new Image();
-            imgTmp.src = camada.desenhoCamada;
-            this.contextoAtual.drawImage(imgTmp, 0,0);
+        for (let i = 0; i < desenho.camadas.length; i++) {
+            this.CriaCamada(desenho.largura, desenho.altura, desenho.camadas[i].nome);
+            this.camadaAtual.style.opacity = Number(desenho.camadas[i].opacidade)/100;
+            opacidadeSlider[i].value = Number(desenho.camadas[i].opacidade);
+            
+            let imgTmp = new Image(desenho.largura, desenho.altura);
+            imgTmp.src = desenho.camadas[i].desenhoCamada;
+            imgTmp.onload = (() => {
+                const ctx = this.contextoAtual;
+                return () => ctx.drawImage(imgTmp, 0, 0);
+            })();
         }
 
+        document.getElementById("nome-desenho").value = desenho.nome;
         document.getElementById("modal-configuracao").style.display = "none";
         document.getElementsByTagName("main")[0].style.display = "grid";
         document.documentElement.style.background = "#fff";

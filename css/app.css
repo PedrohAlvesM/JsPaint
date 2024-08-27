@@ -57,10 +57,6 @@ button, a {
     border: 3px solid #e3e3e3;
 }
 
-.container-seleciona-desenho  button {
-    width: 50%;
-}
-
 a {
     text-align: center;
     text-decoration: none;
@@ -144,14 +140,19 @@ a {
     height: 25%;
 }
 
+#desenhos-salvos {
+    width: 50%;
+    height: 300px;
+}
+
 .container-seleciona-desenho {
     height: 100px;
     background-color: var(--cor-fundo-secundario);
     overflow-y: scroll;
 }
 
-.container-seleciona-desenho > div {
-    width: 100;
+.container-seleciona-desenho  button {
+    width: 50%;
 }
 
 #area-mover {

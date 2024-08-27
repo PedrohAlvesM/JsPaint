@@ -133,7 +133,12 @@ function VerificaDesenhosSalvos() {
     const desenhosSalvos = localStorage.getItem("desenhosSalvos");
     if (desenhosSalvos !== null) {
         const dadosDesenhos = JSON.parse(desenhosSalvos);
-        const containerDesenhos = document.createElement("div");
+        const containerDesenhos = document.getElementById("desenhos-salvos");
+
+        if (dadosDesenhos.length === 0) {
+            containerDesenhos.style.height = "auto";
+            return
+        }
         
         for (let i = 0; i < dadosDesenhos.length; i++) {
             const container = document.createElement("div");
