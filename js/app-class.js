@@ -8,6 +8,7 @@ import { SelecionaCor } from "./selecionaCor-class.js";
 export class App {
     constructor() {
         this.touchscreen = false;
+        this.desenhoSalvo = false;
 
         this.camadas = [];
         this.camadaAtual = null;
@@ -446,7 +447,8 @@ export class App {
     }
 
     SalvarEstadoDesenho() {
-        let desenhoAtual = {
+        //template para as informações do desenho
+        const desenhoAtual = {
             nome: "",
             largura: this.camadaAtual.width,
             altura: this.camadaAtual.height,
@@ -455,11 +457,11 @@ export class App {
 
         desenhoAtual.nome = document.getElementById("nome-desenho").value;
 
+        //salva as informações da camada
         const nomeCamadas = document.getElementsByClassName("nome-camada");
         const opacidadeCamadas = document.getElementsByClassName("opacidade-camada");
-
-        for (let i = 0; i < nomeCamadas.length; i++) {
-            let tmp = {
+        for (let i = 0; i < this.camadas.length; i++) {
+            const tmp = {
                 nome: "",
                 opacidade: "",
                 desenhoCamada: "",
@@ -467,13 +469,12 @@ export class App {
             tmp.nome = nomeCamadas[i].innerText;
             tmp.opacidade = opacidadeCamadas[i].value;
 
+            tmp.desenhoCamada = this.camadas[i].toDataURL("image/png", 1);
+    
             desenhoAtual.camadas.push(tmp);
         }
-        for (let i = 0; i < this.camadas.length; i++) {
-            let desenhoCamada = this.camadas[i].toDataURL("image/png", 1);
-            desenhoAtual.camadas[i].desenhoCamada = desenhoCamada;
-        }
 
+        //atualiza as informações do desenho caso ele já exista
         const dadosStr = localStorage.getItem("desenhosSalvos");
         if (dadosStr !== null) {
             const dadosDesenhos = JSON.parse(dadosStr);
@@ -498,6 +499,7 @@ export class App {
             desenhosSalvos.push(desenhoAtual);
             localStorage.setItem("desenhosSalvos", JSON.stringify(desenhosSalvos));
         }
+        this.desenhoSalvo = true;
     }
 
     CarregarDesenho(i) {
@@ -518,6 +520,7 @@ export class App {
                 return () => ctx.drawImage(imgTmp, 0, 0);
             })();
         }
+        this.desenhoSalvo = true;
 
         document.getElementById("nome-desenho").value = desenho.nome;
         document.getElementById("modal-configuracao").style.display = "none";

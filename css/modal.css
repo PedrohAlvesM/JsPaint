@@ -19,12 +19,25 @@
 }
 
 
-#modal-ajuda, #mensagem, #resolucao-alta-demais {
+#modal-ajuda, #mensagem, #resolucao-alta-demais, #modal-msg-salvou {
     display: none;
 }
 
 #abrir-ajuda, #abrir-salvar {
     cursor: pointer;
+}
+
+#modal-msg-salvou {
+    display: block;
+    width: auto;
+    height: auto;
+    overflow-y: hidden;
+    top: -300px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 1s linear;
+    animation: unset;
+    opacity: 0;
 }
 
 @keyframes moveIn {

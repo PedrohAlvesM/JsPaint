@@ -80,29 +80,42 @@ document.getElementById("confimar-tamanho-tela").addEventListener("click", ()=>{
 document.getElementById("abrir-ajuda").addEventListener("click", ()=>{
     const modalAjuda = document.getElementById("modal-ajuda");
     
-    AbrirModal(modalAjuda);
+    AbrirModal(modalAjuda, "moveIn");
 });
 
 document.getElementById("abrir-exportar").addEventListener("click", ()=>{
     const modalExportar = document.getElementById("modal-exportar");
     app.SalvarDesenho();
     
-    AbrirModal(modalExportar);
+    AbrirModal(modalExportar, "moveIn");
 });
 
 document.getElementById("abrir-salvar").addEventListener("click", ()=>{
+    if (app.desenhoSalvo) {
+        app.SalvarEstadoDesenho();
+        
+        const modal = document.getElementById("modal-msg-salvou");
+        modal.style.top = "50%";
+        modal.style.opacity = 1;
+        
+        setTimeout(()=> {
+            modal.style.opacity = 0;
+        }, 2500);
+
+        return
+    } 
     const modalSalvar = document.getElementById("modal-salvar");
     
-    AbrirModal(modalSalvar);
+    AbrirModal(modalSalvar, "moveIn");
 });
 
-function AbrirModal(modal) {
+function AbrirModal(modal, animacao) {
     const estilo = getComputedStyle(modal);
     
     if (estilo.display === "none") {
         pilhaMenuAberto.push(modal);
         modal.style.setProperty("display", "grid");
-        modal.style.setProperty("animation-name", "moveIn");
+        modal.style.setProperty("animation-name", animacao);
         modal.style.setProperty("z-index", pilhaMenuAberto.length+1);
     }
 }
@@ -112,7 +125,12 @@ function FecharModal() {
         const modal = pilhaMenuAberto.pop();
         
         const estiloModal = getComputedStyle(modal);
-        modal.style.setProperty("animation-name", "moveOut");
+        if (estiloModal.animationName === "moveIn") {
+            modal.style.setProperty("animation-name", "moveOut");
+        }
+        else if (estiloModal.animationName === "fadeIn") {
+            modal.style.setProperty("animation-name", "fadeOut");
+        }
 
         const tempoAnimacaoStr = estiloModal.animationDuration;
         const tempoAnimacaoInt = Number(tempoAnimacaoStr.slice(0, tempoAnimacaoStr.indexOf("s")));
