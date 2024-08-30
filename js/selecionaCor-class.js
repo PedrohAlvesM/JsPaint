@@ -1,20 +1,30 @@
 export class SelecionaCor {
-    constructor () {
+    constructor() {
         this.icone = document.getElementById("seleciona-cor");
     }
-    
+
     CorSelecionada(x, y, camadas) {
         let corRGB;
-        for (let camada of camadas) {
-            corRGB = camada.getContext("2d").getImageData(x, y, 1, 1).data;
-            const pixelVazio = new Uint8ClampedArray(4);
-            if (corRGB[0] !== pixelVazio[0] && corRGB[1] !== pixelVazio[1] && corRGB[2] !== pixelVazio[2] && corRGB[3] !== pixelVazio[3]) {
-                break
-            }
-        }
-        let corHex = this.RGBAParaHex(corRGB);
+        let corHEX;
 
-        document.querySelectorAll("input[type='color']").forEach(e => e.value = corHex);
+        const tmp = document.createElement("canvas");
+
+        tmp.width = camadas[0].width;
+        tmp.height = camadas[0].height;
+
+        const ctx = tmp.getContext("2d");
+        for (let camada of camadas) {
+            ctx.beginPath();
+            ctx.filter = `opacity(${Number(camada.style.opacity)*100}%)`;
+            ctx.closePath();
+            ctx.drawImage(camada, 0, 0);
+        }
+
+        corRGB = ctx.getImageData(x, y, 1,1).data;
+        if (corRGB[3] !== 0) { //o alpha da cor como 0 é usado apenas em pixels não pintados
+            corHEX = this.RGBAParaHex(corRGB);
+            document.querySelectorAll("input[type='color']").forEach(e => e.value = corHEX);
+        }
 
         document.getElementById("pincel").click();
     }

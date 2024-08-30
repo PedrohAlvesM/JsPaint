@@ -168,9 +168,6 @@ export class App {
                 this.formaGeometrica.ctx = this.contextoAtual;
                 this.formaGeometrica.DesenhaForma();
             }
-            else if (this.ferramentaSelecionada === this.BaldeTinta) {
-                this.BaldeTinta.Pintar(this.contextoAtual, this.camadaAtual.width, this.camadaAtual.height, coordenadas.x, coordenadas.y);
-            }
         });
 
         this.camadaAtual.addEventListener(eventoTerminar, (e)=>{
