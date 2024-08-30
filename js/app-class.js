@@ -196,7 +196,7 @@ export class App {
         }
         else {
             document.addEventListener("keydown", (tecla) => {
-                if (document.activeElement === document.getElementById("texto-inserido") || document.activeElement === document.getElementById("nome-desenho")) {
+                if (document.activeElement.tagName === "INPUT" || document.activeElement.classList.contains("nome-camada")) {
                     return
                 }
                 const atalhoSimples = {
