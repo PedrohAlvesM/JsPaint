@@ -44,14 +44,13 @@ export class App {
                 this.ferramentaSelecionada = ferramenta;
             });
         }
+        document.getElementById("confirmar-mover").addEventListener("click", () => { this.mover.MoverArea(this.contextoAtual); });
     }
 
     Init(larguraTela, alturaTela) {
         this.CriaCamada(larguraTela, alturaTela);
 
         this.pincel.tamanhoPincel = 2;
-
-        document.getElementById("confirmar-mover").addEventListener("click", () => { this.mover.MoverArea(this.contextoAtual); });
     }
 
     DefineTamanhoTela(largura, altura) {
@@ -126,7 +125,7 @@ export class App {
             eventoDeMovimento = "touchmove";
         }
 
-        this.camadaAtual.addEventListener(eventoComecar, (e)=>{
+        this.camadas[this.camadas.length -1].addEventListener(eventoComecar, (e)=>{
             let coordenadas = {x: e.offsetX, y: e.offsetY};
 
             if (eventoComecar === "touchstart")  {
@@ -140,7 +139,7 @@ export class App {
                     this.borracha.apagando = false;
     
                     const distanciaInicial = Math.hypot(e.targetTouches[0].pageX - e.targetTouches[1].pageX, e.targetTouches[0].pageY - e.targetTouches[1].pageY);
-                    this.camadaAtual.addEventListener("touchmove", (e)=>{
+                    this.camadas[this.camadas.length -1].addEventListener("touchmove", (e)=>{
                         this.AtualizarZoomTouch(e, distanciaInicial);
                     });
                 }
@@ -156,7 +155,7 @@ export class App {
     
     
             if (this.ferramentaSelecionada === this.pincel || this.ferramentaSelecionada === this.borracha) {
-                this.camadaAtual.addEventListener(eventoDeMovimento, this.MovimentoMouse);
+                this.camadas[this.camadas.length -1].addEventListener(eventoDeMovimento, this.MovimentoMouse);
             }
             else if (this.ferramentaSelecionada === this.selecionaCor) {
                 this.selecionaCor.CorSelecionada(coordenadas.x, coordenadas.y, this.camadas);
@@ -166,19 +165,20 @@ export class App {
             }
             else if (this.ferramentaSelecionada === this.formaGeometrica) {
                 this.formaGeometrica.ctx = this.contextoAtual;
+                this.formaGeometrica.canvas = this.camadas[this.camadas.length -1];
                 this.formaGeometrica.DesenhaForma();
             }
         });
 
-        this.camadaAtual.addEventListener(eventoTerminar, (e)=>{
+        this.camadas[this.camadas.length -1].addEventListener(eventoTerminar, (e)=>{
             if (eventoTerminar === "touchend") e.preventDefault();
 
             if (this.borracha.apagando) {
-                this.camadaAtual.removeEventListener(eventoDeMovimento, this.MovimentoMouse);
+                this.camadas[this.camadas.length -1].removeEventListener(eventoDeMovimento, this.MovimentoMouse);
                 this.borracha.apagando = false;
             }
             else if (this.pincel.desenhando) {
-                this.camadaAtual.removeEventListener(eventoDeMovimento, this.MovimentoMouse);
+                this.camadas[this.camadas.length -1].removeEventListener(eventoDeMovimento, this.MovimentoMouse);
                 this.pincel.desenhando = false;
             }
             this.contextoAtual.beginPath();
@@ -193,7 +193,7 @@ export class App {
         }
         else {
             document.addEventListener("keydown", (tecla) => {
-                if (document.activeElement.tagName === "INPUT" || document.activeElement.classList.contains("nome-camada")) {
+                if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA" || document.activeElement.classList.contains("nome-camada")) {
                     return
                 }
                 const atalhoSimples = {
@@ -359,7 +359,7 @@ export class App {
         this.camadaAtual = camada;
         this.contextoAtual = this.camadaAtual.getContext("2d");
         this.camadas.forEach(camada => camada.style.zIndex = 0);
-        camada.style.zIndex = 1;
+        this.camadas[this.camadas.length-1].style.zIndex = 1;
 
         for (let tmp of document.querySelectorAll("div.camada-info")) {
             tmp.style.backgroundColor = "var(--cor-fundo-secundaria)";
