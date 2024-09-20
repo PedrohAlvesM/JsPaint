@@ -4,6 +4,7 @@ import { CriarTexto } from "./criarTexto-class.js";
 import { FormaGeometrica } from "./formaGeometrica-class.js";
 import { MoverArea } from "./moverArea-class.js";
 import { SelecionaCor } from "./selecionaCor-class.js";
+import { BaldeDeTinta } from "./balde-de-tinta-class.js";
 
 export class App {
     constructor() {
@@ -24,12 +25,13 @@ export class App {
         this.formaGeometrica = new FormaGeometrica();
         this.mover = new MoverArea();
         this.selecionaCor = new SelecionaCor();
+        this.baldeDeTinta = new BaldeDeTinta();
 
         this.MovimentoMouse = this.MovimentoMouse.bind(this);
         this.AtualizarZoomMouse = this.AtualizarZoomMouse.bind(this);
         this.AtualizarZoomTouch = this.AtualizarZoomTouch.bind(this);
 
-        for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor]) {
+        for (let ferramenta of [this.pincel, this.borracha, this.texto, this.formaGeometrica, this.mover, this.selecionaCor, this.baldeDeTinta]) {
             ferramenta.icone.addEventListener("click", () => {
                 document.querySelectorAll(".ferramentas > img").forEach(icone => icone.style.backgroundColor = "");
                 ferramenta.icone.style.backgroundColor = "var(--cor-fundo-secundario)"
@@ -167,6 +169,16 @@ export class App {
             else if (this.ferramentaSelecionada === this.formaGeometrica) {
                 this.formaGeometrica.ctx = this.contextoAtual;
                 this.formaGeometrica.DesenhaForma();
+            }
+            else if (this.ferramentaSelecionada === this.baldeDeTinta) {
+                //usando OffscreenCanvas para todo o processo acontecer em segundo plano
+                const offTela = new OffscreenCanvas(this.camadaAtual.width, this.camadaAtual.height);
+                const ctxOffTela = offTela.getContext("2d");
+
+                ctxOffTela.drawImage(this.camadaAtual, 0,0);
+                const estadoTela = ctxOffTela.getImageData(0,0, offTela.width, offTela.height);
+                this.baldeDeTinta.PreencherArea(estadoTela, coordenadas.x, coordenadas.y);
+                this.contextoAtual.putImageData(estadoTela, 0,0);
             }
         });
 
