@@ -1,6 +1,7 @@
 export class FormaGeometrica {
-    constructor(ctx) {
-        this.ctx = ctx;
+    constructor() {
+        this.canvas;
+        this.ctx;
         this.quadrado = false;
         this.circulo = false;
         this.reta = false;
@@ -58,8 +59,8 @@ export class FormaGeometrica {
 
         if (event.touches)  {
             event.preventDefault();
-            this.posFinal.x =  event.touches[0].clientX - this.ctx.canvas.getBoundingClientRect().left;
-            this.posFinal.y =  event.touches[0].clientY - this.ctx.canvas.getBoundingClientRect().top;
+            this.posFinal.x =  event.touches[0].clientX -this.canvas.getBoundingClientRect().left;
+            this.posFinal.y =  event.touches[0].clientY -this.canvas.getBoundingClientRect().top;
         }
 
         if (this.posInicio.x === null && this.posInicio.y === null) {
@@ -72,21 +73,21 @@ export class FormaGeometrica {
 
             this.posInicio.x = this.posFinal.x;
             this.posInicio.y = this.posFinal.y;
-            this.estadoAntesDaForma = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+            this.estadoAntesDaForma = this.ctx.getImageData(0, 0,this.canvas.width,this.canvas.height);
             
             const self = this.DesenhaForma.bind(this);
-            this.ctx.canvas.addEventListener(eventoDeMovimento, self);
-            this.ctx.canvas.addEventListener(eventoTerminar, () => {
+           this.canvas.addEventListener(eventoDeMovimento, self);
+           this.canvas.addEventListener(eventoTerminar, () => {
                 this.posInicio.x = null;
                 this.posInicio.y = null;
                 this.ctx.putImageData(this.estadoDepoisDaForma, 0, 0);
                 this.estadoAntesDaForma = null;
 
-                this.ctx.canvas.removeEventListener(eventoDeMovimento, self);
+               this.canvas.removeEventListener(eventoDeMovimento, self);
             }, { once: true });
         }
 
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.clearRect(0, 0,this.canvas.width,this.canvas.height);
 
         this.ctx.fillStyle = document.getElementById("cor-preenchimento-forma-geometrica").value;
         this.ctx.lineWidth = Number(document.getElementById("tamanho-linha-forma-geometrica").value);
@@ -136,9 +137,9 @@ export class FormaGeometrica {
 
         this.ctx.closePath();
 
-        let estadoFormaGeometrica = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        let estadoFormaGeometrica = this.ctx.getImageData(0, 0,this.canvas.width,this.canvas.height);
 
-        this.estadoDepoisDaForma = new ImageData(this.ctx.canvas.width, this.ctx.canvas.height);
+        this.estadoDepoisDaForma = new ImageData(this.ctx.canvas.width,this.canvas.height);
 
         for (let i = 0; i < estadoFormaGeometrica.data.length; i++) {
             if (estadoFormaGeometrica.data[i] !== 0) {
